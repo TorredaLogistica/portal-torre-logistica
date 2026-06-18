@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torre Logística Claro</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+}
+
+/* HEADER */
+.header {
+    background-color: #1f355c;
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+/* CONTAINER */
+.container {
+    padding: 40px;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* ÍCONE VERMELHO */
+.icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px auto;
+    border-radius: 50%;
+    background-color: #e60000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 30px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Claro | Torre - Central de Controle</h1>
+</div>
+
+<div class="container">
+
+<div class="grid">
+
+<a class="card" href="https://dashboard-slaseparacaofaturamento-mdnfzinkaebwzysne83ewp.streamlit.app/" target="_blank">
+    <div class="icon">📊</div>
+    <div class="title">Separação e Faturamento</div>
+</a>
+
+<a class="card" href="https://pedidoslpsaas-y44bkbmcg4kon8fogbro34.streamlit.app/" target="_blank">
+    <div class="icon">📦</div>
+    <div class="title">Pedidos para LPs</div>
+</a>
+
+<a class="card" href="https://valorestoques-eas-73bxfsks3rnoxjo44fuqm7.streamlit.app/" target="_blank">
+    <div class="icon">💰</div>
+    <div class="title">Resultado do DRE</div>
+</a>
+
+<a class="card" href="https://valorestoques-eas-73bxfsks3rnoxjo44fuqm7.streamlit.app/" target="_blank">
+    <div class="icon">📈</div>
+    <div class="title">Valores dos EAs</div>
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>
