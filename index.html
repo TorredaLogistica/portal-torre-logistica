@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Torre Logística Claro</title>
+
 <style>
 :root {
     --azul-claro: #1f355c;
@@ -14,7 +15,9 @@
     --sombra: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 html, body {
     margin: 0;
@@ -108,7 +111,7 @@ body.locked {
     font-size: 14px;
 }
 
-/* PORTAL ORIGINAL */
+/* PORTAL */
 .header {
     background-color: var(--azul-claro);
     color: white;
@@ -130,7 +133,7 @@ body.locked {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    grid-template-columns: repeat(5, minmax(210px, 1fr));
     gap: 32px;
     align-items: stretch;
 }
@@ -176,9 +179,16 @@ body.locked {
     line-height: 1.3;
 }
 
-@media (max-width: 1280px) {
+/* RESPONSIVO */
+@media (max-width: 1480px) {
     .grid {
-        grid-template-columns: repeat(2, minmax(260px, 1fr));
+        grid-template-columns: repeat(3, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 980px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
     }
 }
 
@@ -186,69 +196,101 @@ body.locked {
     .header h1 {
         font-size: 18px;
     }
+
     .container {
         padding: 28px 18px 40px;
     }
+
     .grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
+
     .card {
         min-height: 160px;
     }
 }
 </style>
 </head>
+
 <body class="locked">
 
+<!-- CAMADA DE SEGURANÇA -->
 <div id="loginOverlay" aria-hidden="false">
     <div class="login-box">
         <h2>Acesso Restrito</h2>
         <p>Informe a senha para acessar a página principal.</p>
-        <input type="password" id="senha" placeholder="Digite a senha" autocomplete="current-password" />
+
+        <input
+            type="password"
+            id="senha"
+            placeholder="Digite a senha"
+            autocomplete="current-password"
+        />
+
         <div class="login-actions">
             <button type="button" onclick="validarSenha()">Entrar</button>
         </div>
+
         <div id="erro" class="erro"></div>
     </div>
 </div>
 
+<!-- CABEÇALHO -->
 <div class="header">
     <h1>Claro | Torre - Central de Controle</h1>
 </div>
 
+<!-- CARDS -->
 <div class="container">
     <div class="grid">
-        <a class="card" href="https://dashboard-slaseparacaofaturamento-mdnfzinkaebwzysne83ewp.streamlit.app/" target="_blank" rel="noopener noreferrer">
+
+        <a class="card"
+           href="https://dashboard-slaseparacaofaturamento-mdnfzinkaebwzysne83ewp.streamlit.app/"
+           target="_blank"
+           rel="noopener noreferrer">
             <div class="icon">📊</div>
             <div class="title">Separação e Faturamento</div>
         </a>
 
-        <a class="card" href="https://pedidoslpsaas-y44bkbmcg4kon8fogbro34.streamlit.app/" target="_blank" rel="noopener noreferrer">
+        <a class="card"
+           href="https://pedidoslpsaas-y44bkbmcg4kon8fogbro34.streamlit.app/"
+           target="_blank"
+           rel="noopener noreferrer">
             <div class="icon">📦</div>
             <div class="title">Pedidos para LPs</div>
         </a>
 
-        <a class="card" href="https://resultadodre-lk6rh4ahefeuwfhwrg2ioc.streamlit.app/" target="_blank" rel="noopener noreferrer">
+        <a class="card"
+           href="https://resultadodre-lk6rh4ahefeuwfhwrg2ioc.streamlit.app/"
+           target="_blank"
+           rel="noopener noreferrer">
             <div class="icon">💰</div>
             <div class="title">Resultado do DRE</div>
         </a>
 
-        <a class="card" href="https://valorestoques-eas-73bxfsks3rnoxjo44fuqm7.streamlit.app/" target="_blank" rel="noopener noreferrer">
+        <a class="card"
+           href="https://valorestoques-eas-73bxfsks3rnoxjo44fuqm7.streamlit.app/"
+           target="_blank"
+           rel="noopener noreferrer">
             <div class="icon">📈</div>
             <div class="title">Valores dos EAs</div>
         </a>
-        
-        <a class="card" href="https://chatbot-logistica-e4cpfbcta3qyqchopsdjeg.streamlit.app/" target="_blank" rel="noopener noreferrer">
+
+        <a class="card"
+           href="https://chatbot-logistica-e4cpfbcta3qyqchopsdjeg.streamlit.app/"
+           target="_blank"
+           rel="noopener noreferrer">
             <div class="icon">🤖</div>
             <div class="title">Chatbot Torre Logística</div>
         </a>
-        
+
     </div>
 </div>
 
 <script>
 const SENHA_PORTAL = 'claro2026';
+
 const loginOverlay = document.getElementById('loginOverlay');
 const erro = document.getElementById('erro');
 const senhaInput = document.getElementById('senha');
@@ -268,6 +310,7 @@ function bloquearPortal() {
 
 function validarSenha() {
     const senha = senhaInput.value;
+
     if (senha === SENHA_PORTAL) {
         sessionStorage.setItem('portalLiberado', 'sim');
         liberarPortal();
@@ -278,13 +321,13 @@ function validarSenha() {
     }
 }
 
-senhaInput.addEventListener('keydown', function (event) {
+senhaInput.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         validarSenha();
     }
 });
 
-window.addEventListener('load', function () {
+window.addEventListener('load', function() {
     if (sessionStorage.getItem('portalLiberado') === 'sim') {
         liberarPortal();
     } else {
