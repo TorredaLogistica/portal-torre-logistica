@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Torre Logística Claro</title>
-
 <style>
 :root {
     --azul-claro: #1f355c;
@@ -13,7 +11,7 @@
     --fundo: #dfe1e6;
     --card-bg: #f7f7f7;
     --texto: #1f2937;
-    --sombra: 0 8px 20px rgba(0,0,0,0.08);
+    --sombra: 0 6px 16px rgba(0,0,0,0.08);
 }
 
 * {
@@ -33,9 +31,8 @@ body.locked {
 }
 
 /* ============================= */
-/* CAMADA DE SEGURANÇA */
+/* CAMADA DE SEGURANCA */
 /* ============================= */
-
 #loginOverlay {
     position: fixed;
     inset: 0;
@@ -96,7 +93,7 @@ body.locked {
     border: none;
     border-radius: 10px;
     background: var(--vermelho-claro);
-    color: #fff;
+    color: #ffffff;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
@@ -118,14 +115,13 @@ body.locked {
 /* ============================= */
 /* PORTAL */
 /* ============================= */
-
 .header {
     background-color: var(--azul-claro);
     color: white;
-    padding: 20px 12px;
+    min-height: 68px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
 }
 
 .header h1 {
@@ -135,131 +131,141 @@ body.locked {
 }
 
 .container {
-    padding: 44px 32px 56px;
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/* Grid com os cards */
+/* Cinco cards por linha em telas grandes */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 32px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
     align-items: stretch;
 }
 
 .card {
+    min-width: 0;
+    min-height: 145px;
+    padding: 16px 10px;
     background: var(--card-bg);
-    border-radius: 18px;
-    min-height: 184px;
-    padding: 26px 20px;
+    border-radius: 16px;
+    color: #333333;
     text-align: center;
     text-decoration: none;
-    color: #333;
     box-shadow: var(--sombra);
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 14px 28px rgba(0,0,0,0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.12);
 }
 
 .icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 18px;
+    width: 66px;
+    height: 66px;
+    margin: 0 auto 11px;
     border-radius: 50%;
     background-color: var(--vermelho-claro);
+    color: white;
+    font-size: 30px;
+    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 36px;
-    line-height: 1;
+    flex-shrink: 0;
 }
 
 .title {
+    max-width: 100%;
     font-weight: 700;
-    font-size: 17px;
-    line-height: 1.3;
+    font-size: 15px;
+    line-height: 1.25;
+    overflow-wrap: break-word;
 }
 
 /* ============================= */
 /* RESPONSIVO */
 /* ============================= */
-
-@media (max-width: 1280px) {
+@media (max-width: 1200px) {
     .grid {
-        grid-template-columns: repeat(2, minmax(260px, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 950px) {
+    .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        min-height: 60px;
+        padding: 14px 16px;
+    }
+
     .header h1 {
         font-size: 18px;
     }
 
     .container {
-        padding: 28px 18px 40px;
+        padding: 14px;
     }
 
     .grid {
         grid-template-columns: 1fr;
-        gap: 20px;
     }
 
     .card {
-        min-height: 160px;
+        min-height: 135px;
     }
 }
 </style>
 </head>
-
 <body class="locked">
 
-<!-- ============================= -->
-<!-- CAMADA DE SEGURANÇA -->
-<!-- ============================= -->
-
+<!-- CAMADA DE SEGURANCA -->
 <div id="loginOverlay" aria-hidden="false">
     <div class="login-box">
         <h2>Acesso Restrito</h2>
         <p>Informe a senha para acessar a página principal.</p>
-
         <input
             type="password"
             id="senha"
             placeholder="Digite a senha"
             autocomplete="current-password"
-        />
-
+        >
         <div class="login-actions">
             <button type="button" onclick="validarSenha()">Entrar</button>
         </div>
-
         <div id="erro" class="erro"></div>
     </div>
 </div>
 
-<!-- ============================= -->
-<!-- CABEÇALHO -->
-<!-- ============================= -->
-
+<!-- CABECALHO -->
 <div class="header">
     <h1>Claro | Torre - Central de Controle</h1>
 </div>
 
-<!-- ============================= -->
 <!-- CARDS DOS INDICADORES -->
-<!-- ============================= -->
-
 <div class="container">
     <div class="grid">
 
-        <!-- 1º BOTÃO - CHATBOT TORRE LOGÍSTICA -->
+        <!-- 1 - CHATBOT TORRE LOGISTICA -->
         <a class="card"
            href="https://chatbot-logistica-e4cpfbcta3qyqchopsdjeg.streamlit.app/"
            target="_blank"
@@ -268,7 +274,7 @@ body.locked {
             <div class="title">Chatbot Torre Logística</div>
         </a>
 
-        <!-- 2º BOTÃO - SEPARAÇÃO E FATURAMENTO -->
+        <!-- 2 - SEPARACAO E FATURAMENTO -->
         <a class="card"
            href="https://dashboard-slaseparacaofaturamento-mdnfzinkaebwzysne83ewp.streamlit.app/"
            target="_blank"
@@ -277,7 +283,7 @@ body.locked {
             <div class="title">Separação e Faturamento</div>
         </a>
 
-        <!-- 3º BOTÃO - PEDIDOS PARA LPS -->
+        <!-- 3 - PEDIDOS PARA LPS -->
         <a class="card"
            href="https://pedidoslpsaas-y44bkbmcg4kon8fogbro34.streamlit.app/"
            target="_blank"
@@ -286,7 +292,7 @@ body.locked {
             <div class="title">Pedidos para LPs</div>
         </a>
 
-        <!-- 4º BOTÃO - RESULTADO DO DRE -->
+        <!-- 4 - RESULTADO DO DRE -->
         <a class="card"
            href="https://resultadodre-lk6rh4ahefeuwfhwrg2ioc.streamlit.app/"
            target="_blank"
@@ -295,7 +301,7 @@ body.locked {
             <div class="title">Resultado do DRE</div>
         </a>
 
-        <!-- 5º BOTÃO - VALORES DOS EAS -->
+        <!-- 5 - VALORES DOS EAS -->
         <a class="card"
            href="https://valorestoques-eas-73bxfsks3rnoxjo44fuqm7.streamlit.app/"
            target="_blank"
@@ -303,7 +309,8 @@ body.locked {
             <div class="icon">📈</div>
             <div class="title">Valores dos EAs</div>
         </a>
-        <!-- 6º BOTÃO - ATENDIMENTO DE OVS NOS TLS-->
+
+        <!-- 6 - ATENDIMENTO DE OVS NOS TLS -->
         <a class="card"
            href="https://atendimento-de-ovs-nos-tls-in3rykeacnvjxedhb7r9zc.streamlit.app/"
            target="_blank"
@@ -312,7 +319,7 @@ body.locked {
             <div class="title">Atendimento de OVs nos TLs</div>
         </a>
 
-        <!-- 7º BOTÃO - TAXA DE OCUPAÇÃO DOS CDS-->
+        <!-- 7 - TAXA DE OCUPACAO DOS CDS -->
         <a class="card"
            href="https://taxadeocupacaodoscds-tfx8ftu78n46vhvn5dxc7k.streamlit.app/"
            target="_blank"
@@ -321,7 +328,7 @@ body.locked {
             <div class="title">Taxa de Ocupação dos CDs</div>
         </a>
 
-        <!-- 8º BOTÃO - PEDIDOS CANAL VERMELHO-->
+        <!-- 8 - PEDIDOS CANAL VERMELHO -->
         <a class="card"
            href="https://cuencjwy3ahhnzymzsspuc.streamlit.app/"
            target="_blank"
@@ -330,7 +337,7 @@ body.locked {
             <div class="title">Pedidos Canal Vermelho</div>
         </a>
 
-        <!-- 9º BOTÃO - NFS NÃO AGRUPADAS-->
+        <!-- 9 - NFS NAO AGRUPADAS -->
         <a class="card"
            href="https://nfs-nao-agrupadas-juqvjn8nhbzuhzzdfwknbl.streamlit.app/"
            target="_blank"
@@ -339,7 +346,7 @@ body.locked {
             <div class="title">Pedidos LPs e AAs NFs não Agrupadas</div>
         </a>
 
-        <!-- 10º BOTÃO - FATURAS DOS OPLs-->
+        <!-- 10 - FATURAS DOS OPLS -->
         <a class="card"
            href="https://faturasdosopls-fdgzskwvbciwkgubekfjcz.streamlit.app/"
            target="_blank"
@@ -348,25 +355,21 @@ body.locked {
             <div class="title">Faturas dos OPLs</div>
         </a>
 
-        <!-- 11º BOTÃO - RECEBIMENTO DE USADOS-->
+        <!-- 11 - RECEBIMENTO DE USADOS -->
         <a class="card"
            href="https://controlederecebimentodeusados-ucfnrvqwuceiet5q7tt4wn.streamlit.app/"
            target="_blank"
            rel="noopener noreferrer">
-            <div class="icon">🔄</div>
+            <div class="icon">♻️</div>
             <div class="title">Recebimento de Usados</div>
         </a>
-        
+
     </div>
 </div>
 
-<!-- ============================= -->
 <!-- SCRIPT DA SENHA -->
-<!-- ============================= -->
-
 <script>
 const SENHA_PORTAL = 'claro2026';
-
 const loginOverlay = document.getElementById('loginOverlay');
 const erro = document.getElementById('erro');
 const senhaInput = document.getElementById('senha');
