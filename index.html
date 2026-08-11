@@ -190,6 +190,16 @@ body.locked {
     overflow-wrap: break-word;
 }
 
+
+.login-gap { height: 10px; }
+.login-box button:disabled { opacity: 0.65; cursor: wait; transform: none; }
+.aviso-privacidade { margin-top: 12px; color: #6b7280; font-size: 11px; line-height: 1.35; }
+.user-area { margin-left: auto; display: none; align-items: center; gap: 12px; font-size: 14px; }
+.user-area.visible { display: flex; }
+.user-name { font-weight: 700; }
+.logout-btn { border: 1px solid rgba(255,255,255,.65); border-radius: 8px; padding: 7px 12px; color: #fff; background: transparent; cursor: pointer; }
+.logout-btn:hover { background: rgba(255,255,255,.12); }
+
 /* ============================= */
 /* RESPONSIVO */
 /* ============================= */
@@ -242,36 +252,29 @@ body.locked {
 <div id="loginOverlay" aria-hidden="false">
     <div class="login-box">
         <h2>Acesso Restrito</h2>
-        <p>Informe seu e-mail corporativo e a senha do portal.</p>
+        <p>Informe seus dados exatamente como foram cadastrados.</p>
 
-        <input
-            type="email"
-            id="email"
-            placeholder="Digite seu e-mail corporativo"
-            autocomplete="username"
-            inputmode="email"
-        >
-
-        <div style="height: 10px;"></div>
-
-        <input
-            type="password"
-            id="senha"
-            placeholder="Digite a senha"
-            autocomplete="current-password"
-        >
+        <input type="text" id="nome" placeholder="Digite seu nome" autocomplete="name" maxlength="120">
+        <div class="login-gap"></div>
+        <input type="email" id="email" placeholder="Digite seu e-mail" autocomplete="username" inputmode="email" maxlength="160">
+        <div class="login-gap"></div>
+        <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="current-password" maxlength="128">
 
         <div class="login-actions">
             <button type="button" id="btnEntrar" onclick="validarAcesso()">Entrar</button>
         </div>
-
         <div id="erro" class="erro" role="alert" aria-live="polite"></div>
+        <div class="aviso-privacidade">A validação utiliza somente identificadores protegidos. A senha não é armazenada nem registrada pelo portal.</div>
     </div>
 </div>
 
 <!-- CABECALHO -->
 <div class="header">
     <h1>Claro | Torre - Central de Controle</h1>
+    <div id="userArea" class="user-area">
+        <span>Usuário: <span id="nomeUsuario" class="user-name"></span></span>
+        <button type="button" class="logout-btn" onclick="sairPortal()">Sair</button>
+    </div>
 </div>
 
 <!-- CARDS DOS INDICADORES -->
@@ -382,28 +385,77 @@ body.locked {
 
 <!-- SCRIPT DA CAMADA DE SEGURANCA -->
 <script>
-/*
- * AVISO: como o portal esta no GitHub Pages, esta camada e uma barreira
- * de acesso no navegador e nao substitui autenticacao feita em servidor.
- * Para alterar a senha geral, gere um novo SHA-256 e substitua SENHA_HASH.
- */
 const CONFIG_ACESSO = {
-    DOMINIOS_PERMITIDOS: ['claro.com.br'],
-    SENHA_HASH: '3e856aa80f4336bd947e3916e30616e87dc1e9a8a28679680e44b1efb5a0627b',
+    ARQUIVO_USUARIOS: 'usuarios.json',
     MAX_TENTATIVAS: 5,
-    BLOQUEIO_MINUTOS: 15
+    BLOQUEIO_MINUTOS: 15,
+    ITERACOES_PBKDF2: 600000
 };
 
 const loginOverlay = document.getElementById('loginOverlay');
 const erro = document.getElementById('erro');
+const nomeInput = document.getElementById('nome');
 const emailInput = document.getElementById('email');
 const senhaInput = document.getElementById('senha');
 const btnEntrar = document.getElementById('btnEntrar');
+const userArea = document.getElementById('userArea');
+const nomeUsuario = document.getElementById('nomeUsuario');
+let usuariosProtegidos = [];
 
-function liberarPortal() {
+function normalizarNome(valor) {
+    return valor.trim().replace(/\s+/g, ' ').normalize('NFKC').toLowerCase();
+}
+
+function normalizarEmail(valor) {
+    return valor.trim().normalize('NFKC').toLowerCase();
+}
+
+function bytesParaHex(bytes) {
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function hexParaBytes(hex) {
+    if (!/^[0-9a-f]+$/i.test(hex) || hex.length % 2 !== 0) throw new Error('Formato criptografico invalido.');
+    return new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+}
+
+async function sha256Hex(texto) {
+    const dados = new TextEncoder().encode(texto);
+    const digest = await crypto.subtle.digest('SHA-256', dados);
+    return bytesParaHex(new Uint8Array(digest));
+}
+
+async function pbkdf2Hex(senha, saltHex, iteracoes) {
+    const material = await crypto.subtle.importKey(
+        'raw', new TextEncoder().encode(senha), 'PBKDF2', false, ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', hash: 'SHA-256', salt: hexParaBytes(saltHex), iterations: iteracoes },
+        material, 256
+    );
+    return bytesParaHex(new Uint8Array(bits));
+}
+
+function comparacaoConstante(a, b) {
+    if (a.length !== b.length) return false;
+    let diferenca = 0;
+    for (let i = 0; i < a.length; i++) diferenca |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return diferenca === 0;
+}
+
+async function carregarUsuarios() {
+    const resposta = await fetch(CONFIG_ACESSO.ARQUIVO_USUARIOS, { cache: 'no-store' });
+    if (!resposta.ok) throw new Error('Arquivo de usuários indisponível.');
+    const dados = await resposta.json();
+    usuariosProtegidos = Array.isArray(dados.usuarios) ? dados.usuarios : [];
+}
+
+function liberarPortal(nomeExibicao) {
     loginOverlay.style.display = 'none';
     loginOverlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('locked');
+    nomeUsuario.textContent = nomeExibicao;
+    userArea.classList.add('visible');
     erro.textContent = '';
 }
 
@@ -411,21 +463,7 @@ function bloquearPortal() {
     loginOverlay.style.display = 'flex';
     loginOverlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('locked');
-}
-
-function emailPermitido(email) {
-    const valor = email.trim().toLowerCase();
-    const partes = valor.split('@');
-    if (partes.length !== 2 || !partes[0] || !partes[1]) return false;
-    return CONFIG_ACESSO.DOMINIOS_PERMITIDOS.includes(partes[1]);
-}
-
-async function sha256(texto) {
-    const dados = new TextEncoder().encode(texto);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', dados);
-    return Array.from(new Uint8Array(hashBuffer))
-        .map(byte => byte.toString(16).padStart(2, '0'))
-        .join('');
+    userArea.classList.remove('visible');
 }
 
 function obterControleTentativas() {
@@ -469,19 +507,14 @@ function registrarFalha() {
 async function validarAcesso() {
     if (verificarBloqueio()) return;
 
-    const email = emailInput.value.trim().toLowerCase();
+    const nomeDigitado = nomeInput.value.trim().replace(/\s+/g, ' ');
+    const nomeNormalizado = normalizarNome(nomeDigitado);
+    const emailNormalizado = normalizarEmail(emailInput.value);
     const senha = senhaInput.value;
     erro.textContent = '';
 
-    if (!emailPermitido(email)) {
-        erro.textContent = 'Informe um e-mail corporativo autorizado.';
-        emailInput.focus();
-        return;
-    }
-
-    if (!senha) {
-        erro.textContent = 'Informe a senha.';
-        senhaInput.focus();
+    if (!nomeNormalizado || !emailNormalizado || !senha) {
+        erro.textContent = 'Preencha nome, e-mail e senha.';
         return;
     }
 
@@ -489,41 +522,76 @@ async function validarAcesso() {
     btnEntrar.textContent = 'Validando...';
 
     try {
-        const hashInformado = await sha256(senha);
-        if (hashInformado === CONFIG_ACESSO.SENHA_HASH) {
+        if (!usuariosProtegidos.length) await carregarUsuarios();
+
+        const [nomeHash, emailHash] = await Promise.all([
+            sha256Hex(nomeNormalizado),
+            sha256Hex(emailNormalizado)
+        ]);
+
+        const usuario = usuariosProtegidos.find(item =>
+            item.ativo === true &&
+            comparacaoConstante(item.nome_hash || '', nomeHash) &&
+            comparacaoConstante(item.email_hash || '', emailHash)
+        );
+
+        let senhaValida = false;
+        if (usuario) {
+            const senhaHash = await pbkdf2Hex(
+                senha,
+                usuario.salt,
+                usuario.iteracoes || CONFIG_ACESSO.ITERACOES_PBKDF2
+            );
+            senhaValida = comparacaoConstante(usuario.senha_hash || '', senhaHash);
+        }
+
+        if (usuario && senhaValida) {
             salvarControleTentativas({ tentativas: 0, bloqueadoAte: 0 });
             sessionStorage.setItem('portalLiberado', 'sim');
-            sessionStorage.setItem('portalUsuario', email);
+            sessionStorage.setItem('portalNome', nomeDigitado);
+            nomeInput.value = '';
+            emailInput.value = '';
             senhaInput.value = '';
-            liberarPortal();
+            liberarPortal(nomeDigitado);
         } else {
             registrarFalha();
-            erro.textContent = 'E-mail ou senha inválidos.';
+            erro.textContent = 'Nome, e-mail ou senha inválidos.';
             senhaInput.value = '';
             senhaInput.focus();
             verificarBloqueio();
         }
-    } catch {
-        erro.textContent = 'Não foi possível validar o acesso neste navegador.';
+    } catch (e) {
+        erro.textContent = 'Não foi possível validar o acesso. Confira se usuarios.json foi publicado corretamente.';
     } finally {
         if (!verificarBloqueio()) btnEntrar.disabled = false;
         btnEntrar.textContent = 'Entrar';
     }
 }
 
-[emailInput, senhaInput].forEach(function(input) {
-    input.addEventListener('keydown', function(event) {
+function sairPortal() {
+    sessionStorage.removeItem('portalLiberado');
+    sessionStorage.removeItem('portalNome');
+    nomeUsuario.textContent = '';
+    bloquearPortal();
+    nomeInput.focus();
+}
+
+[nomeInput, emailInput, senhaInput].forEach(input => {
+    input.addEventListener('keydown', event => {
         if (event.key === 'Enter') validarAcesso();
     });
 });
 
-window.addEventListener('load', function() {
-    if (sessionStorage.getItem('portalLiberado') === 'sim') {
-        liberarPortal();
+window.addEventListener('load', async () => {
+    bloquearPortal();
+    verificarBloqueio();
+    try { await carregarUsuarios(); } catch (e) { erro.textContent = e.message; }
+
+    const nomeSessao = sessionStorage.getItem('portalNome');
+    if (sessionStorage.getItem('portalLiberado') === 'sim' && nomeSessao) {
+        liberarPortal(nomeSessao);
     } else {
-        bloquearPortal();
-        verificarBloqueio();
-        emailInput.focus();
+        nomeInput.focus();
     }
 });
 
