@@ -190,16 +190,7 @@ body.locked {
     overflow-wrap: break-word;
 }
 
-
-.login-gap { height: 10px; }
-.login-box button:disabled { opacity: 0.65; cursor: wait; transform: none; }
-.aviso-privacidade { margin-top: 12px; color: #6b7280; font-size: 11px; line-height: 1.35; }
-.user-area { margin-left: auto; display: none; align-items: center; gap: 12px; font-size: 14px; }
-.user-area.visible { display: flex; }
-.user-name { font-weight: 700; }
-.logout-btn { border: 1px solid rgba(255,255,255,.65); border-radius: 8px; padding: 7px 12px; color: #fff; background: transparent; cursor: pointer; }
-.logout-btn:hover { background: rgba(255,255,255,.12); }
-
+.login-gap{height:10px}.login-box button:disabled{opacity:.65;cursor:wait;transform:none}.aviso-privacidade,.device-help{margin-top:8px;color:#6b7280;font-size:11px;line-height:1.35}.device-help{text-align:left}[hidden]{display:none!important}.user-area{margin-left:auto;display:none;align-items:center;gap:12px;font-size:14px}.user-area.visible{display:flex}.user-name{font-weight:700}.logout-btn{border:1px solid rgba(255,255,255,.65);border-radius:8px;padding:7px 12px;color:#fff;background:transparent;cursor:pointer}.logout-btn:hover{background:rgba(255,255,255,.12)}
 /* ============================= */
 /* RESPONSIVO */
 /* ============================= */
@@ -250,31 +241,29 @@ body.locked {
 
 <!-- CAMADA DE SEGURANCA -->
 <div id="loginOverlay" aria-hidden="false">
-    <div class="login-box">
-        <h2>Acesso Restrito</h2>
-        <p>Informe seus dados exatamente como foram cadastrados.</p>
-
-        <input type="text" id="nome" placeholder="Digite seu nome" autocomplete="name" maxlength="120">
-        <div class="login-gap"></div>
-        <input type="email" id="email" placeholder="Digite seu e-mail" autocomplete="username" inputmode="email" maxlength="160">
-        <div class="login-gap"></div>
-        <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="current-password" maxlength="128">
-
-        <div class="login-actions">
-            <button type="button" id="btnEntrar" onclick="validarAcesso()">Entrar</button>
-        </div>
-        <div id="erro" class="erro" role="alert" aria-live="polite"></div>
-        <div class="aviso-privacidade">A validação utiliza somente identificadores protegidos. A senha não é armazenada nem registrada pelo portal.</div>
+  <div class="login-box">
+    <h2>Acesso Restrito</h2>
+    <p>Informe seus dados exatamente como foram cadastrados.</p>
+    <input type="text" id="nome" placeholder="Digite seu nome" autocomplete="name" maxlength="120">
+    <div class="login-gap"></div>
+    <input type="email" id="email" placeholder="Digite seu e-mail" autocomplete="username" maxlength="160">
+    <div class="login-gap"></div>
+    <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="current-password" maxlength="128">
+    <div id="ativacaoDispositivo" hidden>
+      <div class="login-gap"></div>
+      <input type="text" id="codigoDispositivo" placeholder="Código de ativação do dispositivo" autocomplete="off" maxlength="19">
+      <div class="device-help">Solicitado somente na primeira ativação deste navegador.</div>
     </div>
+    <div class="login-actions"><button type="button" id="btnEntrar" onclick="validarAcesso()">Entrar</button></div>
+    <div id="erro" class="erro" role="alert" aria-live="polite"></div>
+    <div class="aviso-privacidade">A senha não é armazenada nem registrada pelo portal.</div>
+  </div>
 </div>
 
 <!-- CABECALHO -->
 <div class="header">
     <h1>Claro | Torre - Central de Controle</h1>
-    <div id="userArea" class="user-area">
-        <span>Usuário: <span id="nomeUsuario" class="user-name"></span></span>
-        <button type="button" class="logout-btn" onclick="sairPortal()">Sair</button>
-    </div>
+    <div id="userArea" class="user-area"><span>Usuário: <span id="nomeUsuario" class="user-name"></span></span><button type="button" class="logout-btn" onclick="sairPortal()">Sair</button></div>
 </div>
 
 <!-- CARDS DOS INDICADORES -->
@@ -385,217 +374,27 @@ body.locked {
 
 <!-- SCRIPT DA CAMADA DE SEGURANCA -->
 <script>
-const CONFIG_ACESSO = {
-    ARQUIVO_USUARIOS: 'usuarios.json',
-    MAX_TENTATIVAS: 5,
-    BLOQUEIO_MINUTOS: 15,
-    ITERACOES_PBKDF2: 600000
-};
-
-const loginOverlay = document.getElementById('loginOverlay');
-const erro = document.getElementById('erro');
-const nomeInput = document.getElementById('nome');
-const emailInput = document.getElementById('email');
-const senhaInput = document.getElementById('senha');
-const btnEntrar = document.getElementById('btnEntrar');
-const userArea = document.getElementById('userArea');
-const nomeUsuario = document.getElementById('nomeUsuario');
-let usuariosProtegidos = [];
-
-function normalizarNome(valor) {
-    return valor.trim().replace(/\s+/g, ' ').normalize('NFKC').toLowerCase();
-}
-
-function normalizarEmail(valor) {
-    return valor.trim().normalize('NFKC').toLowerCase();
-}
-
-function bytesParaHex(bytes) {
-    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function hexParaBytes(hex) {
-    if (!/^[0-9a-f]+$/i.test(hex) || hex.length % 2 !== 0) throw new Error('Formato criptografico invalido.');
-    return new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-}
-
-async function sha256Hex(texto) {
-    const dados = new TextEncoder().encode(texto);
-    const digest = await crypto.subtle.digest('SHA-256', dados);
-    return bytesParaHex(new Uint8Array(digest));
-}
-
-async function pbkdf2Hex(senha, saltHex, iteracoes) {
-    const material = await crypto.subtle.importKey(
-        'raw', new TextEncoder().encode(senha), 'PBKDF2', false, ['deriveBits']
-    );
-    const bits = await crypto.subtle.deriveBits(
-        { name: 'PBKDF2', hash: 'SHA-256', salt: hexParaBytes(saltHex), iterations: iteracoes },
-        material, 256
-    );
-    return bytesParaHex(new Uint8Array(bits));
-}
-
-function comparacaoConstante(a, b) {
-    if (a.length !== b.length) return false;
-    let diferenca = 0;
-    for (let i = 0; i < a.length; i++) diferenca |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    return diferenca === 0;
-}
-
-async function carregarUsuarios() {
-    const resposta = await fetch(CONFIG_ACESSO.ARQUIVO_USUARIOS, { cache: 'no-store' });
-    if (!resposta.ok) throw new Error('Arquivo de usuários indisponível.');
-    const dados = await resposta.json();
-    usuariosProtegidos = Array.isArray(dados.usuarios) ? dados.usuarios : [];
-}
-
-function liberarPortal(nomeExibicao) {
-    loginOverlay.style.display = 'none';
-    loginOverlay.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('locked');
-    nomeUsuario.textContent = nomeExibicao;
-    userArea.classList.add('visible');
-    erro.textContent = '';
-}
-
-function bloquearPortal() {
-    loginOverlay.style.display = 'flex';
-    loginOverlay.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('locked');
-    userArea.classList.remove('visible');
-}
-
-function obterControleTentativas() {
-    try {
-        return JSON.parse(localStorage.getItem('portalControleTentativas')) || { tentativas: 0, bloqueadoAte: 0 };
-    } catch {
-        return { tentativas: 0, bloqueadoAte: 0 };
-    }
-}
-
-function salvarControleTentativas(controle) {
-    localStorage.setItem('portalControleTentativas', JSON.stringify(controle));
-}
-
-function verificarBloqueio() {
-    const controle = obterControleTentativas();
-    const agora = Date.now();
-    if (controle.bloqueadoAte > agora) {
-        const minutos = Math.ceil((controle.bloqueadoAte - agora) / 60000);
-        erro.textContent = `Acesso temporariamente bloqueado. Tente novamente em ${minutos} minuto(s).`;
-        btnEntrar.disabled = true;
-        return true;
-    }
-    if (controle.bloqueadoAte && controle.bloqueadoAte <= agora) {
-        salvarControleTentativas({ tentativas: 0, bloqueadoAte: 0 });
-    }
-    btnEntrar.disabled = false;
-    return false;
-}
-
-function registrarFalha() {
-    const controle = obterControleTentativas();
-    controle.tentativas = (controle.tentativas || 0) + 1;
-    if (controle.tentativas >= CONFIG_ACESSO.MAX_TENTATIVAS) {
-        controle.bloqueadoAte = Date.now() + CONFIG_ACESSO.BLOQUEIO_MINUTOS * 60000;
-        controle.tentativas = 0;
-    }
-    salvarControleTentativas(controle);
-}
-
-async function validarAcesso() {
-    if (verificarBloqueio()) return;
-
-    const nomeDigitado = nomeInput.value.trim().replace(/\s+/g, ' ');
-    const nomeNormalizado = normalizarNome(nomeDigitado);
-    const emailNormalizado = normalizarEmail(emailInput.value);
-    const senha = senhaInput.value;
-    erro.textContent = '';
-
-    if (!nomeNormalizado || !emailNormalizado || !senha) {
-        erro.textContent = 'Preencha nome, e-mail e senha.';
-        return;
-    }
-
-    btnEntrar.disabled = true;
-    btnEntrar.textContent = 'Validando...';
-
-    try {
-        if (!usuariosProtegidos.length) await carregarUsuarios();
-
-        const [nomeHash, emailHash] = await Promise.all([
-            sha256Hex(nomeNormalizado),
-            sha256Hex(emailNormalizado)
-        ]);
-
-        const usuario = usuariosProtegidos.find(item =>
-            item.ativo === true &&
-            comparacaoConstante(item.nome_hash || '', nomeHash) &&
-            comparacaoConstante(item.email_hash || '', emailHash)
-        );
-
-        let senhaValida = false;
-        if (usuario) {
-            const senhaHash = await pbkdf2Hex(
-                senha,
-                usuario.salt,
-                usuario.iteracoes || CONFIG_ACESSO.ITERACOES_PBKDF2
-            );
-            senhaValida = comparacaoConstante(usuario.senha_hash || '', senhaHash);
-        }
-
-        if (usuario && senhaValida) {
-            salvarControleTentativas({ tentativas: 0, bloqueadoAte: 0 });
-            sessionStorage.setItem('portalLiberado', 'sim');
-            sessionStorage.setItem('portalNome', nomeDigitado);
-            nomeInput.value = '';
-            emailInput.value = '';
-            senhaInput.value = '';
-            liberarPortal(nomeDigitado);
-        } else {
-            registrarFalha();
-            erro.textContent = 'Nome, e-mail ou senha inválidos.';
-            senhaInput.value = '';
-            senhaInput.focus();
-            verificarBloqueio();
-        }
-    } catch (e) {
-        erro.textContent = 'Não foi possível validar o acesso. Confira se usuarios.json foi publicado corretamente.';
-    } finally {
-        if (!verificarBloqueio()) btnEntrar.disabled = false;
-        btnEntrar.textContent = 'Entrar';
-    }
-}
-
-function sairPortal() {
-    sessionStorage.removeItem('portalLiberado');
-    sessionStorage.removeItem('portalNome');
-    nomeUsuario.textContent = '';
-    bloquearPortal();
-    nomeInput.focus();
-}
-
-[nomeInput, emailInput, senhaInput].forEach(input => {
-    input.addEventListener('keydown', event => {
-        if (event.key === 'Enter') validarAcesso();
-    });
-});
-
-window.addEventListener('load', async () => {
-    bloquearPortal();
-    verificarBloqueio();
-    try { await carregarUsuarios(); } catch (e) { erro.textContent = e.message; }
-
-    const nomeSessao = sessionStorage.getItem('portalNome');
-    if (sessionStorage.getItem('portalLiberado') === 'sim' && nomeSessao) {
-        liberarPortal(nomeSessao);
-    } else {
-        nomeInput.focus();
-    }
-});
-
-setInterval(verificarBloqueio, 30000);
+const CFG={ARQUIVO:'usuarios.json',MAX:5,BLOQUEIO:15,ITERACOES:600000};
+const $=id=>document.getElementById(id),overlay=$('loginOverlay'),erro=$('erro'),nome=$('nome'),email=$('email'),senha=$('senha'),codigo=$('codigoDispositivo'),ativacao=$('ativacaoDispositivo'),btn=$('btnEntrar'),area=$('userArea'),nomeUsuario=$('nomeUsuario');let usuarios=[];
+const normNome=v=>v.trim().replace(/\s+/g,' ').normalize('NFKC').toLowerCase(),normEmail=v=>v.trim().normalize('NFKC').toLowerCase(),normCodigo=v=>v.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+const bhex=b=>Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join(''),hbytes=h=>new Uint8Array(h.match(/.{1,2}/g).map(x=>parseInt(x,16)));
+async function sha(t){return bhex(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t))))}
+async function pbkdf2(p,s,it){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(p),'PBKDF2',false,['deriveBits']);return bhex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:hbytes(s),iterations:it},k,256)))}
+function igual(a='',b=''){if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0}
+async function carregar(){const r=await fetch(CFG.ARQUIVO,{cache:'no-store'});if(!r.ok)throw Error('Arquivo de usuários indisponível.');const d=await r.json();usuarios=Array.isArray(d.usuarios)?d.usuarios:[]}
+function controle(){try{return JSON.parse(localStorage.getItem('portalTentativas'))||{n:0,ate:0}}catch{return{n:0,ate:0}}}
+function salvar(c){localStorage.setItem('portalTentativas',JSON.stringify(c))}
+function bloqueado(){const c=controle(),agora=Date.now();if(c.ate>agora){erro.textContent=`Acesso bloqueado. Tente novamente em ${Math.ceil((c.ate-agora)/60000)} minuto(s).`;btn.disabled=true;return true}if(c.ate)salvar({n:0,ate:0});btn.disabled=false;return false}
+function falha(){const c=controle();c.n=(c.n||0)+1;if(c.n>=CFG.MAX){c.n=0;c.ate=Date.now()+CFG.BLOQUEIO*60000}salvar(c)}
+const chave=e=>`portalDispositivo:${e}`;async function recibo(e,c){return sha(`TORRE|${e}|${c}|DISPOSITIVO`)}
+async function ativo(u,e){return igual(localStorage.getItem(chave(e))||'',await recibo(e,u.codigo_dispositivo_hash||''))}
+async function ativar(u,e,c){const ch=await sha(normCodigo(c));if(!igual(ch,u.codigo_dispositivo_hash||''))return false;localStorage.setItem(chave(e),await recibo(e,ch));return true}
+function liberar(n){overlay.style.display='none';overlay.setAttribute('aria-hidden','true');document.body.classList.remove('locked');nomeUsuario.textContent=n;area.classList.add('visible');erro.textContent=''}
+function fechar(){overlay.style.display='flex';overlay.setAttribute('aria-hidden','false');document.body.classList.add('locked');area.classList.remove('visible')}
+async function validarAcesso(){if(bloqueado())return;const nEx=nome.value.trim().replace(/\s+/g,' '),nn=normNome(nEx),ee=normEmail(email.value),p=senha.value;erro.textContent='';if(!nn||!ee||!p){erro.textContent='Preencha nome, e-mail e senha.';return}btn.disabled=true;btn.textContent='Validando...';try{if(!usuarios.length)await carregar();const [nh,eh]=await Promise.all([sha(nn),sha(ee)]),u=usuarios.find(x=>x.ativo===true&&igual(x.nome_hash,nh)&&igual(x.email_hash,eh));let ok=false;if(u)ok=igual(await pbkdf2(p,u.salt,u.iteracoes||CFG.ITERACOES),u.senha_hash);if(!u||!ok){falha();erro.textContent='Nome, e-mail ou senha inválidos.';senha.value='';bloqueado();return}if(!await ativo(u,eh)){ativacao.hidden=false;if(!codigo.value){erro.textContent='Este navegador ainda não foi ativado. Informe o código do dispositivo.';codigo.focus();return}if(!await ativar(u,eh,codigo.value)){erro.textContent='Código de ativação do dispositivo inválido.';codigo.select();return}}salvar({n:0,ate:0});sessionStorage.setItem('portalLiberado','sim');sessionStorage.setItem('portalNome',nEx);nome.value=email.value=senha.value=codigo.value='';ativacao.hidden=true;liberar(nEx)}catch(e){erro.textContent='Não foi possível validar. Confira se usuarios.json foi publicado corretamente.'}finally{if(!bloqueado())btn.disabled=false;btn.textContent='Entrar'}}
+function sairPortal(){sessionStorage.clear();nomeUsuario.textContent='';ativacao.hidden=true;codigo.value='';fechar();nome.focus()}
+[nome,email,senha,codigo].forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')validarAcesso()}));codigo.addEventListener('input',()=>codigo.value=codigo.value.toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,19));
+window.addEventListener('load',async()=>{fechar();bloqueado();try{await carregar()}catch(e){erro.textContent=e.message}const n=sessionStorage.getItem('portalNome');if(sessionStorage.getItem('portalLiberado')==='sim'&&n)liberar(n);else nome.focus()});setInterval(bloqueado,30000);
 </script>
 
 </body>
