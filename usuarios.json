@@ -4,10 +4,10 @@
     {
       "nome_hash": "b2a2af3b9e82592079d3bc5b94c1a726a3c3259a542521065d0a55597f2e4d98",
       "email_hash": "e25659ca832175a428ff5febcd3384b0240576122ae325229d6d14e10c7016f6",
-      "senha_hash": "c7ea9735c49a800a44ba0d6a3867037ea4793720c258d55a057b59f2c911a193",
-      "salt": "f5b9283493dab73e9425fe8abba737dc",
+      "senha_hash": "3df1592e4497a735d9b13c5f8629a50b53b2947205c09e7888650032f5d7fe7e",
+      "salt": "1a44b7a9cee5b53f651d05c8cb1b89bc",
       "iteracoes": 600000,
-      "codigo_dispositivo_hash": "744dea98931c37d7d9eb9cd7a93bff1c1feb99a39a362ace4e8a99f9e64e8f06",
+      "codigo_dispositivo_hash": "053460786aa1500152bc7be979b01aa06e6cb07eca621590cabdcce54cea9ab1",
       "hostname_referencia_hash": "655731b3fd959e8577c586566b3b1a2620fa5397f9759852c6441d498adcda5f",
       "ativo": true
     }
