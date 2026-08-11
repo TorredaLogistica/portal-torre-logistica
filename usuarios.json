@@ -1,4 +1,13 @@
 {
   "versao": 1,
-  "usuarios": []
+  "usuarios": [
+    {
+      "nome_hash": "b2a2af3b9e82592079d3bc5b94c1a726a3c3259a542521065d0a55597f2e4d98",
+      "email_hash": "e25659ca832175a428ff5febcd3384b0240576122ae325229d6d14e10c7016f6",
+      "senha_hash": "91f185b4b787e89d3d2458eb8c90bb1283eb06983cebddb80cea4f43123c838d",
+      "salt": "59436774100f57b95419bebe335ca968",
+      "iteracoes": 600000,
+      "ativo": true
+    }
+  ]
 }
