@@ -242,17 +242,30 @@ body.locked {
 <div id="loginOverlay" aria-hidden="false">
     <div class="login-box">
         <h2>Acesso Restrito</h2>
-        <p>Informe a senha para acessar a página principal.</p>
+        <p>Informe seu e-mail corporativo e a senha do portal.</p>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Digite seu e-mail corporativo"
+            autocomplete="username"
+            inputmode="email"
+        >
+
+        <div style="height: 10px;"></div>
+
         <input
             type="password"
             id="senha"
             placeholder="Digite a senha"
             autocomplete="current-password"
         >
+
         <div class="login-actions">
-            <button type="button" onclick="validarSenha()">Entrar</button>
+            <button type="button" id="btnEntrar" onclick="validarAcesso()">Entrar</button>
         </div>
-        <div id="erro" class="erro"></div>
+
+        <div id="erro" class="erro" role="alert" aria-live="polite"></div>
     </div>
 </div>
 
@@ -367,12 +380,25 @@ body.locked {
     </div>
 </div>
 
-<!-- SCRIPT DA SENHA -->
+<!-- SCRIPT DA CAMADA DE SEGURANCA -->
 <script>
-const SENHA_PORTAL = 'claro2026';
+/*
+ * AVISO: como o portal esta no GitHub Pages, esta camada e uma barreira
+ * de acesso no navegador e nao substitui autenticacao feita em servidor.
+ * Para alterar a senha geral, gere um novo SHA-256 e substitua SENHA_HASH.
+ */
+const CONFIG_ACESSO = {
+    DOMINIOS_PERMITIDOS: ['claro.com.br'],
+    SENHA_HASH: '3e856aa80f4336bd947e3916e30616e87dc1e9a8a28679680e44b1efb5a0627b',
+    MAX_TENTATIVAS: 5,
+    BLOQUEIO_MINUTOS: 15
+};
+
 const loginOverlay = document.getElementById('loginOverlay');
 const erro = document.getElementById('erro');
+const emailInput = document.getElementById('email');
 const senhaInput = document.getElementById('senha');
+const btnEntrar = document.getElementById('btnEntrar');
 
 function liberarPortal() {
     loginOverlay.style.display = 'none';
@@ -387,23 +413,108 @@ function bloquearPortal() {
     document.body.classList.add('locked');
 }
 
-function validarSenha() {
-    const senha = senhaInput.value;
+function emailPermitido(email) {
+    const valor = email.trim().toLowerCase();
+    const partes = valor.split('@');
+    if (partes.length !== 2 || !partes[0] || !partes[1]) return false;
+    return CONFIG_ACESSO.DOMINIOS_PERMITIDOS.includes(partes[1]);
+}
 
-    if (senha === SENHA_PORTAL) {
-        sessionStorage.setItem('portalLiberado', 'sim');
-        liberarPortal();
-    } else {
-        erro.textContent = 'Senha incorreta.';
-        senhaInput.focus();
-        senhaInput.select();
+async function sha256(texto) {
+    const dados = new TextEncoder().encode(texto);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', dados);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+function obterControleTentativas() {
+    try {
+        return JSON.parse(localStorage.getItem('portalControleTentativas')) || { tentativas: 0, bloqueadoAte: 0 };
+    } catch {
+        return { tentativas: 0, bloqueadoAte: 0 };
     }
 }
 
-senhaInput.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        validarSenha();
+function salvarControleTentativas(controle) {
+    localStorage.setItem('portalControleTentativas', JSON.stringify(controle));
+}
+
+function verificarBloqueio() {
+    const controle = obterControleTentativas();
+    const agora = Date.now();
+    if (controle.bloqueadoAte > agora) {
+        const minutos = Math.ceil((controle.bloqueadoAte - agora) / 60000);
+        erro.textContent = `Acesso temporariamente bloqueado. Tente novamente em ${minutos} minuto(s).`;
+        btnEntrar.disabled = true;
+        return true;
     }
+    if (controle.bloqueadoAte && controle.bloqueadoAte <= agora) {
+        salvarControleTentativas({ tentativas: 0, bloqueadoAte: 0 });
+    }
+    btnEntrar.disabled = false;
+    return false;
+}
+
+function registrarFalha() {
+    const controle = obterControleTentativas();
+    controle.tentativas = (controle.tentativas || 0) + 1;
+    if (controle.tentativas >= CONFIG_ACESSO.MAX_TENTATIVAS) {
+        controle.bloqueadoAte = Date.now() + CONFIG_ACESSO.BLOQUEIO_MINUTOS * 60000;
+        controle.tentativas = 0;
+    }
+    salvarControleTentativas(controle);
+}
+
+async function validarAcesso() {
+    if (verificarBloqueio()) return;
+
+    const email = emailInput.value.trim().toLowerCase();
+    const senha = senhaInput.value;
+    erro.textContent = '';
+
+    if (!emailPermitido(email)) {
+        erro.textContent = 'Informe um e-mail corporativo autorizado.';
+        emailInput.focus();
+        return;
+    }
+
+    if (!senha) {
+        erro.textContent = 'Informe a senha.';
+        senhaInput.focus();
+        return;
+    }
+
+    btnEntrar.disabled = true;
+    btnEntrar.textContent = 'Validando...';
+
+    try {
+        const hashInformado = await sha256(senha);
+        if (hashInformado === CONFIG_ACESSO.SENHA_HASH) {
+            salvarControleTentativas({ tentativas: 0, bloqueadoAte: 0 });
+            sessionStorage.setItem('portalLiberado', 'sim');
+            sessionStorage.setItem('portalUsuario', email);
+            senhaInput.value = '';
+            liberarPortal();
+        } else {
+            registrarFalha();
+            erro.textContent = 'E-mail ou senha inválidos.';
+            senhaInput.value = '';
+            senhaInput.focus();
+            verificarBloqueio();
+        }
+    } catch {
+        erro.textContent = 'Não foi possível validar o acesso neste navegador.';
+    } finally {
+        if (!verificarBloqueio()) btnEntrar.disabled = false;
+        btnEntrar.textContent = 'Entrar';
+    }
+}
+
+[emailInput, senhaInput].forEach(function(input) {
+    input.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') validarAcesso();
+    });
 });
 
 window.addEventListener('load', function() {
@@ -411,9 +522,12 @@ window.addEventListener('load', function() {
         liberarPortal();
     } else {
         bloquearPortal();
-        senhaInput.focus();
+        verificarBloqueio();
+        emailInput.focus();
     }
 });
+
+setInterval(verificarBloqueio, 30000);
 </script>
 
 </body>
