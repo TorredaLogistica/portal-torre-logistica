@@ -2,21 +2,12 @@
   "versao": 2,
   "usuarios": [
     {
-      "nome_hash": "fd312215d6e83c82e78caf4cee95cee5bfacb94a41fbec9a031f378c2f153ce8",
-      "email_hash": "07811b40c0be6d675a8116f4aff7ec61886ccb76629f938998423c174274f05d",
-      "senha_hash": "471e1ed004e0b9729293631f1c65c169c5cee5b61ff637beea313b49a599b7e0",
-      "salt": "caeb1808ac8bdffbef81d538d6002804",
-      "iteracoes": 600000,
-      "codigo_dispositivo_hash": "30abea2ae1f0713b1ee97cf6bf25e3355b1fa7dc774b84140c99bd61ac86e0e2",
-      "ativo": true
-    },
-    {
-      "nome_hash": "bd01b0b648c2c64eb1bddd9361d9972ea684b344fedc4d166654a85e8919e7ad",
+      "nome_hash": "8b18e706405ac85680c2685c8f404dd04f36f6a2a4dd0fed88d45cdb63bbf9a9",
       "email_hash": "e25659ca832175a428ff5febcd3384b0240576122ae325229d6d14e10c7016f6",
-      "senha_hash": "04739e7e13efd8392a2e95254569bde7c472eb3023eeb1a57778c2f51a17f98d",
-      "salt": "c869aaadbd87c35dbba18bb129c93351",
+      "senha_hash": "7761b95bcf9fa370ece601e0671106e6dfdf5631b6e6c78c7a67187170501f56",
+      "salt": "f94d30340626dbe9553f6cd1b32d9972",
       "iteracoes": 600000,
-      "codigo_dispositivo_hash": "812bfc0c4c188f91509a6784961d182d956bad70cfe8b81691018a8e4adadfe6",
+      "codigo_dispositivo_hash": "7af82c5ae869fa03870ab4bd171fea469405820ed9e5af669ea0fc5dcf54def7",
       "ativo": true
     }
   ]
