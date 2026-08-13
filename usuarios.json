@@ -2,12 +2,21 @@
   "versao": 2,
   "usuarios": [
     {
-      "nome_hash": "8b18e706405ac85680c2685c8f404dd04f36f6a2a4dd0fed88d45cdb63bbf9a9",
-      "email_hash": "e25659ca832175a428ff5febcd3384b0240576122ae325229d6d14e10c7016f6",
-      "senha_hash": "fd2c9ee7a59d9a10d288587510aa2c6f3fcc47ca0929092664d730f9470aafcf",
-      "salt": "70d73444962f44dc2527c61e4c879309",
+      "nome_hash": "9e2e00a904df59b32aa807284b6e232953f27ce167a50e3d00dad41e6002e7b4",
+      "email_hash": "811b89becff4dfbc6747a226c4d57e543caf71e984bbcec3e185170070b38d6d",
+      "senha_hash": "029aa6559e2e3a614dc7f5a607386827244e2f4aa7e7ed0a5cf9683a5869525f",
+      "salt": "9ca36df4eedcfd689e2bc5e4f5d94573",
       "iteracoes": 600000,
-      "codigo_dispositivo_hash": "628846548325f51ada54583ed828c9ced7642e73a1af0a3050805dbdf1d66097",
+      "codigo_dispositivo_hash": "4a039aae7c57ebc2226f7e6860a69ded43388256f6743d036bbc48582a9bc36a",
+      "ativo": true
+    },
+    {
+      "nome_hash": "3f0cab7c79d3d806e6e7ebaa13708c268147f24003c7409e24b9484f31ba7c39",
+      "email_hash": "96802e4f5e86c34be5ebd2ad357e05f2a9ca1a29e984381fca471fe738e1cb38",
+      "senha_hash": "ca335b860fbd5efde904e578d71ae68e5384cd46a3506b2909b71c33bd942555",
+      "salt": "b1ef07d7d0eba93403f630b876e42ce9",
+      "iteracoes": 600000,
+      "codigo_dispositivo_hash": "cba1afa194d030e16ed3cf04829e2bc1f32bc309982bc14396964cc30fa86fdf",
       "ativo": true
     }
   ]
