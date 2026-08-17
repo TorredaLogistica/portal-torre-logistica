@@ -18,6 +18,15 @@
       "iteracoes": 600000,
       "codigo_dispositivo_hash": "6136dd658f2ef594cc25d3f287461fe67aec78be9c82b7d869b55e526c1f7277",
       "ativo": true
+    },
+    {
+      "nome_hash": "8b18e706405ac85680c2685c8f404dd04f36f6a2a4dd0fed88d45cdb63bbf9a9",
+      "email_hash": "e25659ca832175a428ff5febcd3384b0240576122ae325229d6d14e10c7016f6",
+      "senha_hash": "9a135700b30c05f8fd93a50b9c4176dc08f8694efeb441dce20122da2ca4495e",
+      "salt": "2197313681684248bae2e13ae627676e",
+      "iteracoes": 600000,
+      "codigo_dispositivo_hash": "62ad831fcecabed15024a564d88724a49ae4153a80d2bccda1f8904912cd0cfd",
+      "ativo": true
     }
   ]
 }
