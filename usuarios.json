@@ -11,15 +11,6 @@
       "ativo": true
     },
     {
-      "nome_hash": "8b18e706405ac85680c2685c8f404dd04f36f6a2a4dd0fed88d45cdb63bbf9a9",
-      "email_hash": "e25659ca832175a428ff5febcd3384b0240576122ae325229d6d14e10c7016f6",
-      "senha_hash": "06d3b61ef494cab4ad175322dff2ee71dff06d66411abf3eaaa9c4ff293bc940",
-      "salt": "9c1df6beea5505e4ccba3270586eadee",
-      "iteracoes": 600000,
-      "codigo_dispositivo_hash": "4c616ac1911678dc662a3239d91feb0b3f20c6dce8afdad868fca6564847a792",
-      "ativo": true
-    },
-    {
       "nome_hash": "255bf5da24eec67d14fc744709e0678568107f3368626f50860f0abf480d7e52",
       "email_hash": "cf8aef39e1a5813bec48402242a504c043e223630b6f95fd272a274a23cea2a7",
       "senha_hash": "535f265a11dfd7c838c955dd1629e7e3a555275ad787cc439d70514a7c961679",
