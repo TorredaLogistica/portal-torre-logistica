@@ -11,13 +11,10 @@ html,body{margin:0;height:100%;font-family:Arial,sans-serif;background:#f3f4f6;c
 .topo strong{font-size:17px}
 #conteudo{height:calc(100% - 58px)}
 iframe{width:100%;height:100%;border:0;background:#fff}
-.preparando,.bloqueio{max-width:620px;margin:70px auto;background:#fff;border-radius:16px;padding:30px;box-shadow:0 10px 28px rgba(0,0,0,.12);text-align:center}
-.preparando h1{color:#1f355c;font-size:25px}.bloqueio h1{color:#b91c1c;font-size:25px}
-.preparando p,.bloqueio p{line-height:1.55}
-.barra{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin:22px 0 12px}
-.barra span{display:block;height:100%;width:0;background:#e60000;transition:width 1s linear}
+.carregando,.bloqueio{max-width:620px;margin:70px auto;background:#fff;border-radius:16px;padding:30px;box-shadow:0 10px 28px rgba(0,0,0,.12);text-align:center}
+.carregando h1{color:#1f355c;font-size:25px}.bloqueio h1{color:#b91c1c;font-size:25px}
+.carregando p,.bloqueio p{line-height:1.55}
 .acao{display:inline-block;margin-top:12px;background:#e60000;color:#fff;text-decoration:none;padding:12px 18px;border:0;border-radius:9px;font-weight:700;cursor:pointer}
-#despertador{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0}
 </style>
 </head>
 <body>
@@ -29,53 +26,32 @@ iframe{width:100%;height:100%;border:0;background:#fff}
 const APP_URL='https://cuencjwy3ahhnzymzsspuc.streamlit.app/';
 const APP_ID='canal_vermelho';
 const PORTAL_SHARED_KEY='b9342075f69fbf07834993550e178cb29eec8346a37259c03c8444e7df541e01';
-const TEMPO_DESPERTAR=45;
 const conteudo=document.getElementById('conteudo');
 const bhex=b=>Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join('');
-let contadorId=null;
 
 function mostrarBloqueio(){
   conteudo.innerHTML=`<div class="bloqueio"><h1>🔒 Acesso não autorizado</h1><p>Este indicador está disponível exclusivamente por meio da Torre de Controle.</p><p>Acesse o portal, realize sua autenticação e selecione novamente o Indicador de Canal Vermelho.</p><a class="acao" href="index.html">Voltar para a Torre de Controle</a></div>`;
 }
-
 async function hmacHex(chave,mensagem){
   const enc=new TextEncoder();
   const key=await crypto.subtle.importKey('raw',enc.encode(chave),{name:'HMAC',hash:'SHA-256'},false,['sign']);
   return bhex(new Uint8Array(await crypto.subtle.sign('HMAC',key,enc.encode(mensagem))));
 }
-
-async function carregarComAutorizacao(){
-  if(contadorId){clearInterval(contadorId);contadorId=null;}
+async function abrirIndicador(){
+  conteudo.innerHTML='<div class="carregando"><h1>Preparando o indicador</h1><p>Aguarde enquanto o Canal Vermelho é iniciado com a autorização da Torre de Controle.</p></div>';
   const ts=Math.floor(Date.now()/1000).toString();
   const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
   const nonce=bhex(bytes);
   const sig=await hmacHex(PORTAL_SHARED_KEY,`${APP_ID}|${ts}|${nonce}`);
   const src=`${APP_URL}?portal_ts=${encodeURIComponent(ts)}&portal_nonce=${encodeURIComponent(nonce)}&portal_sig=${encodeURIComponent(sig)}&embed=true`;
   const frame=document.createElement('iframe');
-  frame.src=src;frame.title='Indicador de Canal Vermelho';frame.allow='clipboard-read; clipboard-write';
+  frame.src=src;
+  frame.title='Indicador de Canal Vermelho';
+  frame.allow='clipboard-read; clipboard-write';
   conteudo.replaceChildren(frame);
 }
-
-function prepararIndicador(){
-  conteudo.innerHTML=`<div class="preparando"><h1>Preparando o indicador</h1><p>O aplicativo pode estar em modo de espera. Aguarde enquanto a Torre inicia o Canal Vermelho.</p><div class="barra"><span id="progresso"></span></div><p id="tempo">Iniciando em ${TEMPO_DESPERTAR} segundos...</p><button class="acao" id="abrirAgora">Tentar abrir agora</button></div><iframe id="despertador" title="Inicialização do indicador"></iframe>`;
-  document.getElementById('despertador').src=APP_URL+'?embed=true&wake='+Date.now();
-  document.getElementById('abrirAgora').onclick=()=>carregarComAutorizacao().catch(mostrarBloqueio);
-  let restante=TEMPO_DESPERTAR;
-  const progresso=document.getElementById('progresso');
-  const tempo=document.getElementById('tempo');
-  contadorId=setInterval(()=>{
-    restante--;
-    progresso.style.width=`${Math.min(100,((TEMPO_DESPERTAR-restante)/TEMPO_DESPERTAR)*100)}%`;
-    tempo.textContent=`Iniciando em ${Math.max(0,restante)} segundos...`;
-    if(restante<=0){
-      clearInterval(contadorId);contadorId=null;
-      carregarComAutorizacao().catch(mostrarBloqueio);
-    }
-  },1000);
-}
-
 if(sessionStorage.getItem('portalLiberado')!=='sim')mostrarBloqueio();
-else prepararIndicador();
+else abrirIndicador().catch(mostrarBloqueio);
 </script>
 </body>
 </html>
