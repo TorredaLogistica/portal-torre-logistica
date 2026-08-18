@@ -334,7 +334,7 @@ body.locked {
         </a>
 
         <!-- 8 - PEDIDOS CANAL VERMELHO -->
-        <a class="card" href="indicador-canal-vermelho.html">
+        <a class="card" href="#" onclick="abrirCanalVermelho(event)">
             <div class="icon">⚡</div>
             <div class="title">Pedidos Canal Vermelho</div>
         </a>
@@ -372,10 +372,47 @@ body.locked {
 <!-- SCRIPT DA CAMADA DE SEGURANCA -->
 <script>
 const CFG={ARQUIVO:'usuarios.json',MAX:5,BLOQUEIO:15,ITERACOES:600000};
+const CANAL_VERMELHO={
+  URL:'https://cuencjwy3ahhnzymzsspuc.streamlit.app/',
+  APP_ID:'canal_vermelho',
+  SHARED_KEY:'b9342075f69fbf07834993550e178cb29eec8346a37259c03c8444e7df541e01'
+};
 const $=id=>document.getElementById(id),overlay=$('loginOverlay'),erro=$('erro'),nome=$('nome'),email=$('email'),senha=$('senha'),codigo=$('codigoDispositivo'),ativacao=$('ativacaoDispositivo'),btn=$('btnEntrar'),area=$('userArea'),nomeUsuario=$('nomeUsuario');let usuarios=[];
 const normNome=v=>v.trim().replace(/\s+/g,' ').normalize('NFKC').toLowerCase(),normEmail=v=>v.trim().normalize('NFKC').toLowerCase(),normCodigo=v=>v.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
 const bhex=b=>Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join(''),hbytes=h=>new Uint8Array(h.match(/.{1,2}/g).map(x=>parseInt(x,16)));
 async function sha(t){return bhex(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t))))}
+async function hmacPortal(chave,mensagem){
+  const enc=new TextEncoder();
+  const key=await crypto.subtle.importKey('raw',enc.encode(chave),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  return bhex(new Uint8Array(await crypto.subtle.sign('HMAC',key,enc.encode(mensagem))));
+}
+async function abrirCanalVermelho(event){
+  event.preventDefault();
+  if(sessionStorage.getItem('portalLiberado')!=='sim'){
+    fechar();
+    erro.textContent='Realize o acesso à Torre antes de abrir o indicador.';
+    nome.focus();
+    return;
+  }
+  // Abre imediatamente uma aba para evitar bloqueio de pop-up do navegador.
+  const novaAba=window.open('about:blank','_blank');
+  if(!novaAba){
+    alert('O navegador bloqueou a nova aba. Permita pop-ups para a Torre de Controle e tente novamente.');
+    return;
+  }
+  novaAba.document.write('<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><title>Preparando indicador</title></head><body style="font-family:Arial;text-align:center;padding:60px"><h2>Preparando o Indicador de Canal Vermelho...</h2><p>Aguarde alguns segundos.</p></body></html>');
+  try{
+    const ts=Math.floor(Date.now()/1000).toString();
+    const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
+    const nonce=bhex(bytes);
+    const sig=await hmacPortal(CANAL_VERMELHO.SHARED_KEY,`${CANAL_VERMELHO.APP_ID}|${ts}|${nonce}`);
+    const destino=`${CANAL_VERMELHO.URL}?portal_ts=${encodeURIComponent(ts)}&portal_nonce=${encodeURIComponent(nonce)}&portal_sig=${encodeURIComponent(sig)}`;
+    novaAba.location.replace(destino);
+  }catch(e){
+    novaAba.close();
+    alert('Não foi possível gerar a autorização do indicador. Tente novamente.');
+  }
+}
 async function pbkdf2(p,s,it){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(p),'PBKDF2',false,['deriveBits']);return bhex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:hbytes(s),iterations:it},k,256)))}
 function igual(a='',b=''){if(a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i);return d===0}
 async function carregar(){const separador=CFG.ARQUIVO.includes('?')?'&':'?';const url=CFG.ARQUIVO+separador+'v='+Date.now();const r=await fetch(url,{cache:'no-store',headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});if(!r.ok)throw Error('Arquivo de usuários indisponível. HTTP '+r.status);const d=await r.json();usuarios=Array.isArray(d.usuarios)?d.usuarios:[];if(!usuarios.length)throw Error('Nenhum usuário ativo foi carregado do usuarios.json.')}
