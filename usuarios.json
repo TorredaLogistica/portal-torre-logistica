@@ -1,5 +1,5 @@
 {
-  "versao": 7,
+  "versao": 11,
   "usuarios": [
     {
       "nome_hash": "8b18e706405ac85680c2685c8f404dd04f36f6a2a4dd0fed88d45cdb63bbf9a9",
@@ -9,8 +9,8 @@
       "iteracoes": 600000,
       "codigo_dispositivo_hash": "305c65484c446c6b0df15a69de8074a1f58e91b70144f2dd661613f8b2b6c309",
       "ativo": true,
-      "aprovado_em": "2026-08-19T19:31:28.706Z"
+      "aprovado_em": "2026-08-19T22:34:24.078Z"
     }
   ],
-  "atualizado_em": "2026-08-19T21:13:23.166Z"
+  "atualizado_em": "2026-08-19T22:35:29.009Z"
 }
