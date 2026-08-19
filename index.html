@@ -271,13 +271,17 @@ body.locked {
 <div id="cadastroModal" class="cadastro-modal" role="dialog" aria-modal="true" aria-labelledby="cadastroTitulo">
   <div class="cadastro-painel">
     <h3 id="cadastroTitulo">Gerador de Cadastro de Usuários</h3>
-    <p class="intro">Ao continuar, uma nova página informará o redirecionamento para o Gerador de Cadastro de Usuários.</p>
+    <p class="intro">Mantenha esta orientação aberta. O SharePoint será exibido em uma nova aba para você seguir o passo a passo.</p>
     <ol class="cadastro-passos">
-      <li>Selecione <strong>Ir para o Gerador</strong>.</li>
-      <li>Uma nova página informará que o Gerador de Cadastro de Usuários está sendo disponibilizado.</li>
-      <li>Quando o download terminar, abra a área de downloads do navegador e execute <strong>Gerador_Cadastro_Torre.exe</strong>.</li>
+      <li>Selecione <strong>Abrir o Gerador em nova aba</strong>.</li>
+      <li>No SharePoint, selecione <strong>Abrir</strong>, no canto superior direito.</li>
+      <li>Selecione <strong>Abrir no aplicativo</strong>.</li>
+      <li>Na confirmação do navegador, marque <strong>Sempre permitir que corpclarobr.sharepoint.com abra esse tipo de link</strong>.</li>
+      <li>Selecione <strong>Abrir Microsoft OneDrive</strong>.</li>
+      <li>Na janela do OneDrive, marque <strong>Eu confiar em https://corpclarobr.sharepoint.com...</strong>.</li>
+      <li>Selecione <strong>Abrir</strong>. Depois, execute <strong>Gerador_Cadastro_Torre.exe</strong>.</li>
     </ol>
-    <div class="cadastro-botoes"><button type="button" class="cadastro-cancelar" onclick="fecharOrientacaoCadastro()">Cancelar</button><a class="cadastro-continuar" href="#" onclick="continuarCadastro(event)">Ir para o Gerador</a></div>
+    <div class="cadastro-botoes"><button type="button" class="cadastro-cancelar" onclick="fecharOrientacaoCadastro()">Cancelar</button><a class="cadastro-continuar" href="#" onclick="continuarCadastro(event)">Abrir o Gerador em nova aba</a></div>
   </div>
 </div>
 
@@ -392,21 +396,10 @@ body.locked {
 
 <!-- SCRIPT DA CAMADA DE SEGURANCA -->
 <script>
-const URL_CADASTRO_TORRE='https://corpclarobr.sharepoint.com/:u:/r/sites/USER-IndicadoresemPowerBI/Documentos%20Compartilhados/Geral/Phyton/Cadastro%20Usu%C3%A1rios%20da%20Torre/Gerador_Cadastro_Torre.exe?e=4%3a0e077f8dc6004a839ea35ea9a7406332&web=1&sharingv2=true&fromShare=true&at=9&xsdata=MDV8MDJ8YW5kcmUuZGlrbWFuQGNsYXJvLmNvbS5icnw3ZjA0ZWY1ZWM0NTc0ZjRhMDU4MTA4ZGVmZGY4YjBhN3w1NTI0N2Q0YmI0MzU0N2E1ODgxYmNhNzYyNzQzNGU3OXwxfDB8NjM5MjI3NDQxNzIzNzEwNTMwfFVua25vd258VFdGcGJHWnNiM2Q4ZXlKRmJYQjBlVTFoY0draU9uUnlkV1VzSWxZaU9pSXdMakF1TURBd01DSXNJbEFpT2lKWGFXNHpNaUlzSWtGT0lqb2lUV0ZwYkNJc0lsZFVJam95ZlE9PXwwfHx8&sdata=QzRsd3ltUzRzNGY5dzM2NVNCNW91R2N2YUcyQU9hWFhOcW1EdlBvanBiRT0%3d&download=1';
+const URL_CADASTRO_TORRE='https://corpclarobr.sharepoint.com/:u:/r/sites/USER-IndicadoresemPowerBI/Documentos%20Compartilhados/Geral/Phyton/Cadastro%20Usu%C3%A1rios%20da%20Torre/Gerador_Cadastro_Torre.exe?e=4%3a0e077f8dc6004a839ea35ea9a7406332&web=1&sharingv2=true&fromShare=true&at=9&xsdata=MDV8MDJ8YW5kcmUuZGlrbWFuQGNsYXJvLmNvbS5icnw3ZjA0ZWY1ZWM0NTc0ZjRhMDU4MTA4ZGVmZGY4YjBhN3w1NTI0N2Q0YmI0MzU0N2E1ODgxYmNhNzYyNzQzNGU3OXwxfDB8NjM5MjI3NDQxNzIzNzEwNTMwfFVua25vd258VFdGcGJHWnNiM2Q4ZXlKRmJYQjBlVTFoY0draU9uUnlkV1VzSWxZaU9pSXdMakF1TURBd01DSXNJbEFpT2lKWGFXNHpNaUlzSWtGT0lqb2lUV0ZwYkNJc0lsZFVJam95ZlE9PXwwfHx8&sdata=QzRsd3ltUzRzNGY5dzM2NVNCNW91R2N2YUcyQU9hWFhOcW1EdlBvanBiRT0%3d';
 function abrirOrientacaoCadastro(event){event.preventDefault();document.getElementById('cadastroModal').classList.add('visible');}
 function fecharOrientacaoCadastro(){document.getElementById('cadastroModal').classList.remove('visible');}
-function continuarCadastro(event){
-  event.preventDefault();
-  const novaAba=window.open('about:blank','_blank');
-  if(!novaAba){
-    alert('O navegador bloqueou a nova aba. Permita pop-ups para a Torre de Controle e tente novamente.');
-    return;
-  }
-  novaAba.document.open();
-  novaAba.document.write(`<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gerador de Cadastro de Usuários</title><style>html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#eef2f7;color:#1f2937}body{display:flex;align-items:center;justify-content:center;padding:24px}.painel{width:100%;max-width:560px;background:#fff;border-radius:18px;padding:36px 32px;box-shadow:0 16px 42px rgba(0,0,0,.16);text-align:center}.icone{width:72px;height:72px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#1f355c;color:#fff;font-size:34px}h1{margin:0 0 12px;color:#1f355c;font-size:26px}p{margin:0;color:#4b5563;line-height:1.55}.barra{height:8px;margin:24px 0 12px;border-radius:999px;background:#e5e7eb;overflow:hidden}.barra span{display:block;width:100%;height:100%;background:#e60000;animation:pulso 1.2s ease-in-out infinite}@keyframes pulso{0%,100%{opacity:.35}50%{opacity:1}}.ajuda{margin-top:18px;font-size:13px;color:#6b7280}</style></head><body><main class="painel"><div class="icone">↗</div><h1>Gerador de Cadastro de Usuários</h1><p>O arquivo está sendo disponibilizado pelo ambiente corporativo.</p><div class="barra"><span></span></div><p class="ajuda">Se o download não iniciar, verifique a área de downloads do navegador.</p></main><script>setTimeout(function(){window.location.replace(${JSON.stringify(URL_CADASTRO_TORRE)});},1200);<\/script></body></html>`);
-  novaAba.document.close();
-  fecharOrientacaoCadastro();
-}
+function continuarCadastro(event){event.preventDefault();const novaAba=window.open(URL_CADASTRO_TORRE,'_blank','noopener,noreferrer');if(!novaAba)alert('O navegador bloqueou a nova aba. Permita pop-ups para a Torre de Controle e tente novamente.');}
 document.addEventListener('keydown',event=>{if(event.key==='Escape')fecharOrientacaoCadastro();});
 
 const CFG={ARQUIVO:'usuarios.json',MAX:5,BLOQUEIO:15,ITERACOES:600000};
