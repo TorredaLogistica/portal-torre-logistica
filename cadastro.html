@@ -29,8 +29,8 @@ label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width
 <div class="acoes"><button class="principal" id="gerar" type="submit">Gerar solicitação</button><a class="btn secundario" href="index.html">Voltar para a Torre</a></div>
 </form>
 <div id="msg" class="msg" role="alert"></div>
-<div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Envie o arquivo JSON baixado ao administrador da Torre para aprovação e publicação.</p><div class="acoes"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro por e-mail</button><button id="baixarNovamente" class="secundario" type="button">Baixar novamente</button><button id="copiarToken" class="secundario" type="button">Copiar código</button></div>
-<p class="nota">Ao clicar em Enviar cadastro por e-mail, o arquivo será baixado novamente e uma nova janela do Outlook Web será aberta com destinatário, assunto e mensagem preenchidos. Anexe o JSON baixado e clique em Enviar.</p></div>
+<div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Clique em Enviar cadastro por e-mail para baixar o JSON e abrir a mensagem ao administrador da Torre.</p><div class="acoes"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro por e-mail</button><button id="copiarToken" class="secundario" type="button">Copiar código</button></div>
+<p class="nota">Ao clicar em Enviar cadastro por e-mail, o arquivo JSON será baixado uma única vez e uma nova janela do Outlook Web será aberta com destinatário, assunto e mensagem preenchidos. Anexe o JSON baixado e clique em Enviar.</p></div>
 </section></main>
 <script>
 const ITERACOES=600000;let ultimoArquivo=null,ultimoNome='',ultimoToken='';
@@ -60,11 +60,11 @@ $('formCadastro').addEventListener('submit',async e=>{
     const pedido={tipo:'solicitacao_cadastro_torre',versao:2,criado_em:new Date().toISOString(),solicitante:{nome_completo:nomeCompleto,usuario,email},registro:{nome_hash:nomeHash,email_hash:emailHash,senha_hash:senhaHash,salt,iteracoes:ITERACOES,codigo_dispositivo_hash:tokenHash,ativo:false,status:'PENDENTE'}};
     const nomeArq='solicitacao_cadastro_torre_'+usuario+'_'+Date.now()+'.json';
     ultimoArquivo=pedido;ultimoNome=nomeArq;ultimoToken=token;$('token').textContent=token;$('resultado').style.display='block';
-    baixar(pedido,nomeArq);aviso('Arquivo gerado e baixado com sucesso.','ok');$('senha').value='';$('confirmar').value='';
+    aviso('Solicitação gerada com sucesso. Clique em Enviar cadastro por e-mail para baixar o JSON e abrir o Outlook Web.','ok');$('senha').value='';$('confirmar').value='';
   }catch(err){aviso('Não foi possível gerar a solicitação neste navegador.','erro')}
   finally{btn.disabled=false;btn.textContent='Gerar solicitação'}
 });
-$('baixarNovamente').onclick=()=>ultimoArquivo&&baixar(ultimoArquivo,ultimoNome);$('copiarToken').onclick=async()=>{await navigator.clipboard.writeText(ultimoToken);aviso('Código copiado.','ok')};
+$('copiarToken').onclick=async()=>{await navigator.clipboard.writeText(ultimoToken);aviso('Código copiado.','ok')};
 
 $('enviarCadastro').onclick=()=>{
   if(!ultimoArquivo)return aviso('Gere a solicitação antes de enviar.','erro');
