@@ -105,7 +105,6 @@ body.locked {
     transform: translateY(-1px);
 }
 
-.cadastro-conta{margin-top:14px;color:#374151;font-size:15px;line-height:1.4}.cadastro-conta a{color:#0563c1;font-weight:700;text-decoration:none}.cadastro-conta a:hover{text-decoration:underline}.cadastro-orientacao{margin-top:5px;color:#6b7280;font-size:11px;line-height:1.35}
 .erro {
     min-height: 22px;
     margin-top: 12px;
@@ -236,6 +235,10 @@ body.locked {
         min-height: 135px;
     }
 }
+
+.cadastro-conta{margin-top:14px;color:#374151;font-size:15px;line-height:1.4}.cadastro-conta a{color:#0563c1;font-weight:700;text-decoration:none}.cadastro-conta a:hover{text-decoration:underline}.cadastro-orientacao{margin-top:5px;color:#6b7280;font-size:11px;line-height:1.35}
+.cadastro-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.78)}.cadastro-modal.visible{display:flex}.cadastro-painel{width:100%;max-width:620px;max-height:92vh;overflow:auto;background:#fff;border-radius:18px;padding:26px 28px;box-shadow:0 20px 55px rgba(0,0,0,.30);text-align:left}.cadastro-painel h3{margin:0 0 8px;color:#1f355c;font-size:24px;text-align:center}.cadastro-painel .intro{margin:0 0 17px;color:#4b5563;text-align:center;line-height:1.45}.cadastro-passos{margin:0;padding-left:22px;color:#374151;line-height:1.55}.cadastro-passos li{margin-bottom:9px}.cadastro-alerta{margin-top:15px;padding:12px 14px;border-radius:10px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:13px;line-height:1.45}.cadastro-botoes{display:flex;gap:10px;margin-top:20px}.cadastro-botoes button,.cadastro-botoes a{flex:1;min-height:44px;border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}.cadastro-cancelar{border:1px solid #cbd5e1;background:#fff;color:#334155}.cadastro-continuar{border:0;background:#e60000;color:#fff}
+
 </style>
 </head>
 <body class="locked">
@@ -256,10 +259,30 @@ body.locked {
       <div class="device-help">Solicitado somente na primeira ativação deste navegador.</div>
     </div>
     <div class="login-actions"><button type="button" id="btnEntrar" onclick="validarAcesso()">Entrar</button></div>
-    <div class="cadastro-conta">Ainda não tem conta? <a href="https://corpclarobr.sharepoint.com/:u:/r/sites/USER-IndicadoresemPowerBI/Documentos%20Compartilhados/Geral/Phyton/Cadastro%20Usu%C3%A1rios%20da%20Torre/Gerador_Cadastro_Torre.exe?e=4%3a0e077f8dc6004a839ea35ea9a7406332&web=1&sharingv2=true&fromShare=true&at=9&xsdata=MDV8MDJ8YW5kcmUuZGlrbWFuQGNsYXJvLmNvbS5icnw3ZjA0ZWY1ZWM0NTc0ZjRhMDU4MTA4ZGVmZGY4YjBhN3w1NTI0N2Q0YmI0MzU0N2E1ODgxYmNhNzYyNzQzNGU3OXwxfDB8NjM5MjI3NDQxNzIzNzEwNTMwfFVua25vd258VFdGcGJHWnNiM2Q4ZXlKRmJYQjBlVTFoY0draU9uUnlkV1VzSWxZaU9pSXdMakF1TURBd01DSXNJbEFpT2lKWGFXNHpNaUlzSWtGT0lqb2lUV0ZwYkNJc0lsZFVJam95ZlE9PXwwfHx8&sdata=QzRsd3ltUzRzNGY5dzM2NVNCNW91R2N2YUcyQU9hWFhOcW1EdlBvanBiRT0%3d" target="_blank" rel="noopener noreferrer">Cadastrar!</a></div>
-    <div class="cadastro-orientacao">O cadastro será aberto pelo ambiente corporativo. O acesso à Torre dependerá da aprovação do administrador.</div>
+    <div class="cadastro-conta">Ainda não tem conta? <a href="#" onclick="abrirOrientacaoCadastro(event)">Cadastrar!</a></div>
+    <div class="cadastro-orientacao">Veja as orientações para abrir o Gerador de Cadastro de Usuários.</div>
     <div id="erro" class="erro" role="alert" aria-live="polite"></div>
     <div class="aviso-privacidade">A senha não é armazenada nem registrada pelo portal.</div>
+  </div>
+</div>
+
+
+<!-- ORIENTACAO PARA ABERTURA DO GERADOR DE CADASTRO -->
+<div id="cadastroModal" class="cadastro-modal" role="dialog" aria-modal="true" aria-labelledby="cadastroTitulo">
+  <div class="cadastro-painel">
+    <h3 id="cadastroTitulo">Gerador de Cadastro de Usuários</h3>
+    <p class="intro">Siga estas etapas. O SharePoint será aberto em uma nova aba para manter esta orientação disponível.</p>
+    <ol class="cadastro-passos">
+      <li>Selecione <strong>Continuar para o Gerador</strong>.</li>
+      <li>No SharePoint, selecione <strong>Abrir</strong>, no canto superior direito.</li>
+      <li>Selecione <strong>Abrir no aplicativo</strong>.</li>
+      <li>Na confirmação do navegador, marque <strong>Sempre permitir que corpclarobr.sharepoint.com abra esse tipo de link</strong>.</li>
+      <li>Selecione <strong>Abrir Microsoft OneDrive</strong>.</li>
+      <li>Na janela do OneDrive, marque <strong>Eu confiar em https://corpclarobr.sharepoint.com...</strong>.</li>
+      <li>Selecione <strong>Abrir</strong>. Depois, execute <strong>Gerador_Cadastro_Torre.exe</strong>.</li>
+    </ol>
+    <div class="cadastro-alerta"><strong>Importante:</strong> se o Windows exibir bloqueio do Microsoft Defender SmartScreen ou informar que o aplicativo não é reconhecido, não ignore a proteção. Solicite a validação ou liberação do arquivo pela equipe de TI/Segurança.</div>
+    <div class="cadastro-botoes"><button type="button" class="cadastro-cancelar" onclick="fecharOrientacaoCadastro()">Cancelar</button><a class="cadastro-continuar" href="#" onclick="continuarCadastro(event)">Continuar para o Gerador</a></div>
   </div>
 </div>
 
@@ -374,6 +397,12 @@ body.locked {
 
 <!-- SCRIPT DA CAMADA DE SEGURANCA -->
 <script>
+const URL_CADASTRO_TORRE='https://corpclarobr.sharepoint.com/:u:/r/sites/USER-IndicadoresemPowerBI/Documentos%20Compartilhados/Geral/Phyton/Cadastro%20Usu%C3%A1rios%20da%20Torre/Gerador_Cadastro_Torre.exe?e=4%3a0e077f8dc6004a839ea35ea9a7406332&web=1&sharingv2=true&fromShare=true&at=9&xsdata=MDV8MDJ8YW5kcmUuZGlrbWFuQGNsYXJvLmNvbS5icnw3ZjA0ZWY1ZWM0NTc0ZjRhMDU4MTA4ZGVmZGY4YjBhN3w1NTI0N2Q0YmI0MzU0N2E1ODgxYmNhNzYyNzQzNGU3OXwxfDB8NjM5MjI3NDQxNzIzNzEwNTMwfFVua25vd258VFdGcGJHWnNiM2Q4ZXlKRmJYQjBlVTFoY0draU9uUnlkV1VzSWxZaU9pSXdMakF1TURBd01DSXNJbEFpT2lKWGFXNHpNaUlzSWtGT0lqb2lUV0ZwYkNJc0lsZFVJam95ZlE9PXwwfHx8&sdata=QzRsd3ltUzRzNGY5dzM2NVNCNW91R2N2YUcyQU9hWFhOcW1EdlBvanBiRT0%3d';
+function abrirOrientacaoCadastro(event){event.preventDefault();document.getElementById('cadastroModal').classList.add('visible');}
+function fecharOrientacaoCadastro(){document.getElementById('cadastroModal').classList.remove('visible');}
+function continuarCadastro(event){event.preventDefault();const novaAba=window.open(URL_CADASTRO_TORRE,'_blank','noopener,noreferrer');if(!novaAba)alert('O navegador bloqueou a nova aba. Permita pop-ups para a Torre de Controle e tente novamente.');}
+document.addEventListener('keydown',event=>{if(event.key==='Escape')fecharOrientacaoCadastro();});
+
 const CFG={ARQUIVO:'usuarios.json',MAX:5,BLOQUEIO:15,ITERACOES:600000};
 const CANAL_VERMELHO={
   URL:'https://cuencjwy3ahhnzymzsspuc.streamlit.app/',
