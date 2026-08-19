@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cadastro | Torre de Controle</title>
+<style>
+:root{--azul:#1f355c;--vermelho:#e60000;--fundo:#eef1f5;--texto:#1f2937}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--fundo);color:var(--texto)}
+header{background:var(--azul);color:#fff;padding:18px 24px;font-weight:700;font-size:20px}
+main{max-width:720px;margin:32px auto;padding:0 18px}.box{background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 32px rgba(0,0,0,.12)}
+h1{margin:0 0 8px;color:var(--azul);font-size:27px}.sub{margin:0 0 24px;color:#667085;line-height:1.5}
+label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width:100%;height:46px;border:1px solid #cfd6e4;border-radius:10px;padding:0 13px;font-size:15px}input:focus{outline:0;border-color:var(--azul);box-shadow:0 0 0 3px rgba(31,53,92,.12)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.acoes{display:flex;gap:10px;margin-top:24px}button,a.btn{min-height:46px;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}.principal{background:var(--vermelho);color:#fff;flex:1}.secundario{background:#fff;color:var(--azul);border:1px solid #cfd6e4!important}.msg{margin-top:16px;padding:12px 14px;border-radius:10px;display:none;line-height:1.45}.erro{display:block;background:#fff1f2;color:#b42318;border:1px solid #fecdd3}.ok{display:block;background:#ecfdf3;color:#027a48;border:1px solid #a6f4c5}.resultado{display:none;margin-top:22px;padding:18px;border:1px solid #a6f4c5;background:#f6fef9;border-radius:12px}.resultado h2{margin:0 0 10px;color:#027a48;font-size:20px}.token{font-family:monospace;font-size:22px;letter-spacing:1px;background:#fff;border:1px dashed #667085;border-radius:9px;padding:12px;text-align:center;margin:12px 0;word-break:break-all}.nota{font-size:12px;color:#667085;line-height:1.45}.status{font-size:13px;color:#667085;margin-top:8px}
+@media(max-width:620px){.grid{grid-template-columns:1fr}.acoes{flex-direction:column}}
+</style>
+</head>
+<body>
+<header>Claro | Torre - Cadastro de Acesso</header>
+<main><section class="box">
+<h1>Solicitação de cadastro</h1>
+<p class="sub">Preencha os dados abaixo. O navegador criará uma solicitação protegida para envio ao administrador da Torre.</p>
+<form id="formCadastro">
+<label for="nome">Nome completo</label><input id="nome" required maxlength="120" autocomplete="name">
+<label for="email">E-mail corporativo</label><input id="email" type="email" required maxlength="160" autocomplete="email" placeholder="nome@claro.com.br">
+<div class="grid"><div><label for="senha">Senha</label><input id="senha" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div><div><label for="confirmar">Confirmar senha</label><input id="confirmar" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div></div>
+<div class="acoes"><button class="principal" id="gerar" type="submit">Gerar solicitação</button><a class="btn secundario" href="index.html">Voltar para a Torre</a></div>
+</form>
+<div id="msg" class="msg" role="alert"></div>
+<div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Envie o arquivo JSON baixado ao administrador da Torre para aprovação e publicação.</p><div class="acoes"><button id="baixarNovamente" class="principal" type="button">Baixar novamente</button><button id="copiarToken" class="secundario" type="button">Copiar código</button></div></div>
+</section></main>
+<script>
+const ITERACOES=600000;let ultimoArquivo=null,ultimoNome='',ultimoToken='';
+const $=id=>document.getElementById(id);const bhex=b=>Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join('');
+const normNome=v=>v.trim().replace(/\s+/g,' ').normalize('NFKC').toLowerCase();
+const normEmail=v=>v.trim().normalize('NFKC').toLowerCase();
+async function sha(t){return bhex(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t))))}
+async function pbkdf2(p,s,it){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(p),'PBKDF2',false,['deriveBits']);return bhex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new Uint8Array(s.match(/.{1,2}/g).map(x=>parseInt(x,16))),iterations:it},k,256)))}
+function aleatorioHex(n){const b=new Uint8Array(n);crypto.getRandomValues(b);return bhex(b)}
+function tokenAtivacao(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',b=new Uint8Array(16);crypto.getRandomValues(b);let t='';for(let i=0;i<16;i++)t+=chars[b[i]%chars.length];return t.match(/.{1,4}/g).join('-')}
+function aviso(txt,tipo){$('msg').textContent=txt;$('msg').className='msg '+tipo}
+function baixar(obj,nome){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=nome;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$('formCadastro').addEventListener('submit',async e=>{e.preventDefault();const nomeEx=$('nome').value.trim().replace(/\s+/g,' '),email=normEmail($('email').value),senha=$('senha').value,confirmar=$('confirmar').value;if(!email.endsWith('@claro.com.br'))return aviso('Informe um e-mail corporativo com o domínio @claro.com.br.','erro');if(senha!==confirmar)return aviso('A confirmação da senha não corresponde à senha informada.','erro');if(senha.length<8)return aviso('A senha deve ter pelo menos 8 caracteres.','erro');const btn=$('gerar');btn.disabled=true;btn.textContent='Gerando...';try{const salt=aleatorioHex(16),token=tokenAtivacao();const [nomeHash,emailHash,senhaHash,tokenHash]=await Promise.all([sha(normNome(nomeEx)),sha(email),pbkdf2(senha,salt,ITERACOES),sha(token.replace(/-/g,''))]);const pedido={tipo:'solicitacao_cadastro_torre',versao:1,criado_em:new Date().toISOString(),registro:{nome_hash:nomeHash,email_hash:emailHash,senha_hash:senhaHash,salt,iteracoes:ITERACOES,codigo_dispositivo_hash:tokenHash,ativo:false,status:'PENDENTE'}};const nomeArq='solicitacao_cadastro_torre_'+Date.now()+'.json';ultimoArquivo=pedido;ultimoNome=nomeArq;ultimoToken=token;$('token').textContent=token;$('resultado').style.display='block';baixar(pedido,nomeArq);aviso('Arquivo gerado e baixado com sucesso.','ok');senha='';$('senha').value='';$('confirmar').value=''}catch(err){aviso('Não foi possível gerar a solicitação neste navegador.','erro')}finally{btn.disabled=false;btn.textContent='Gerar solicitação'}});
+$('baixarNovamente').onclick=()=>ultimoArquivo&&baixar(ultimoArquivo,ultimoNome);$('copiarToken').onclick=async()=>{await navigator.clipboard.writeText(ultimoToken);aviso('Código copiado.','ok')};
+</script></body></html>
