@@ -1,43 +1,16 @@
 {
-  "versao": 3,
+  "versao": 5,
   "usuarios": [
-    {
-      "nome_hash": "3f0cab7c79d3d806e6e7ebaa13708c268147f24003c7409e24b9484f31ba7c39",
-      "email_hash": "96802e4f5e86c34be5ebd2ad357e05f2a9ca1a29e984381fca471fe738e1cb38",
-      "senha_hash": "ca335b860fbd5efde904e578d71ae68e5384cd46a3506b2909b71c33bd942555",
-      "salt": "b1ef07d7d0eba93403f630b876e42ce9",
-      "iteracoes": 600000,
-      "codigo_dispositivo_hash": "cba1afa194d030e16ed3cf04829e2bc1f32bc309982bc14396964cc30fa86fdf",
-      "ativo": true
-    },
-    {
-      "nome_hash": "255bf5da24eec67d14fc744709e0678568107f3368626f50860f0abf480d7e52",
-      "email_hash": "cf8aef39e1a5813bec48402242a504c043e223630b6f95fd272a274a23cea2a7",
-      "senha_hash": "535f265a11dfd7c838c955dd1629e7e3a555275ad787cc439d70514a7c961679",
-      "salt": "35df76e0c9bae28935a8439768fc2d60",
-      "iteracoes": 600000,
-      "codigo_dispositivo_hash": "6136dd658f2ef594cc25d3f287461fe67aec78be9c82b7d869b55e526c1f7277",
-      "ativo": true
-    },
     {
       "nome_hash": "8b18e706405ac85680c2685c8f404dd04f36f6a2a4dd0fed88d45cdb63bbf9a9",
       "email_hash": "e25659ca832175a428ff5febcd3384b0240576122ae325229d6d14e10c7016f6",
-      "senha_hash": "1da5368882b79b53ee58ce29e1e4c80ea99809079d80c607657d7fe32ec2b012",
-      "salt": "431d7e235f29a8da65682cf39f83993a",
+      "senha_hash": "566a8043cc15eacb0172af3f611bda7bd66b9c67e21d15b7ce08b64e10bf321d",
+      "salt": "5c75969760a629bc5b45e0c06d4031a9",
       "iteracoes": 600000,
-      "codigo_dispositivo_hash": "ed6f01735c29f41ad50cd0eaee303900817f903028cacbf4f5002de227dbcc0f",
+      "codigo_dispositivo_hash": "305c65484c446c6b0df15a69de8074a1f58e91b70144f2dd661613f8b2b6c309",
       "ativo": true,
-      "aprovado_em": "2026-08-19T19:02:25.760Z"
-    },
-    {
-      "nome_hash": "98fa8b3773ca5b08b7217e9c12f9d7e7a9d56e1992f8ef8c072d680b3dd5998e",
-      "email_hash": "811b89becff4dfbc6747a226c4d57e543caf71e984bbcec3e185170070b38d6d",
-      "senha_hash": "93c0fdd2ab52535733ca1796e4554582d287027ccbfe8d7a18ba0ff7842c4fcd",
-      "salt": "f518c2a16e34766c22fb5ea449df6eb8",
-      "iteracoes": 600000,
-      "codigo_dispositivo_hash": "4f86399b2384be6e27edd7b9bd06e28236bc52063ad6e591900cacd6b72e22ea",
-      "ativo": true
+      "aprovado_em": "2026-08-19T19:31:28.706Z"
     }
   ],
-  "atualizado_em": "2026-08-19T19:02:25.760Z"
+  "atualizado_em": "2026-08-19T19:31:28.706Z"
 }
