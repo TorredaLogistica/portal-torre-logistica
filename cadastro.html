@@ -30,7 +30,7 @@ label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width
 </form>
 <div id="msg" class="msg" role="alert"></div>
 <div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Envie o arquivo JSON baixado ao administrador da Torre para aprovação e publicação.</p><div class="acoes"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro por e-mail</button><button id="baixarNovamente" class="secundario" type="button">Baixar novamente</button><button id="copiarToken" class="secundario" type="button">Copiar código</button></div>
-<p class="nota">Ao clicar em Enviar cadastro por e-mail, o arquivo será baixado novamente e uma mensagem padrão será aberta para o administrador. Anexe o arquivo JSON baixado antes de enviar.</p></div>
+<p class="nota">Ao clicar em Enviar cadastro por e-mail, o arquivo será baixado novamente e uma nova janela do Outlook Web será aberta com destinatário, assunto e mensagem preenchidos. Anexe o JSON baixado e clique em Enviar.</p></div>
 </section></main>
 <script>
 const ITERACOES=600000;let ultimoArquivo=null,ultimoNome='',ultimoToken='';
@@ -71,9 +71,14 @@ $('enviarCadastro').onclick=()=>{
   baixar(ultimoArquivo,ultimoNome);
   const solicitante=ultimoArquivo.solicitante;
   const assunto='Solicitação de cadastro | Torre de Controle | '+solicitante.usuario;
-  const corpo='Olá, André!%0D%0A%0D%0ASegue minha solicitação de cadastro para acesso à Torre de Controle.%0D%0A%0D%0ANome completo: '+encodeURIComponent(solicitante.nome_completo)+'%0D%0ANome de usuário: '+encodeURIComponent(solicitante.usuario)+'%0D%0AE-mail corporativo: '+encodeURIComponent(solicitante.email)+'%0D%0A%0D%0AAnexei o arquivo JSON gerado pelo portal para análise e aprovação.%0D%0A%0D%0AObrigado.';
-  window.location.href='mailto:andre.dikman@claro.com.br?subject='+encodeURIComponent(assunto)+'&body='+corpo;
-  aviso('A mensagem foi aberta. Anexe o arquivo JSON baixado e clique em Enviar.','ok');
+  const corpoTexto='Olá, André!\n\nSegue minha solicitação de cadastro para acesso à Torre de Controle.\n\nNome completo: '+solicitante.nome_completo+'\nNome de usuário: '+solicitante.usuario+'\nE-mail corporativo: '+solicitante.email+'\n\nAnexe o arquivo JSON que acabou de ser baixado e envie esta mensagem para análise e aprovação.\n\nObrigado.';
+  const outlookUrl='https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent('andre.dikman@claro.com.br')+'&subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpoTexto);
+  const janelaOutlook=window.open(outlookUrl,'_blank','noopener,noreferrer');
+  if(!janelaOutlook){
+    aviso('O navegador bloqueou a nova janela. Permita pop-ups para a Torre e tente novamente.','erro');
+    return;
+  }
+  aviso('O Outlook Web foi aberto em uma nova janela. Anexe o arquivo JSON baixado e clique em Enviar.','ok');
 };
 
 </script></body></html>
