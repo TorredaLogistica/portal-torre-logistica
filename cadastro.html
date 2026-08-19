@@ -22,24 +22,58 @@ label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width
 <p class="sub">Preencha os dados abaixo. O navegador criará uma solicitação protegida para envio ao administrador da Torre.</p>
 <form id="formCadastro">
 <label for="nome">Nome completo</label><input id="nome" required maxlength="120" autocomplete="name">
+<label for="usuario">Nome de usuário</label><input id="usuario" required maxlength="30" autocomplete="username" placeholder="Exemplo: ANDREDIKMAN">
+<p class="nota">Use somente letras e números, sempre em maiúsculas e sem espaços.</p>
 <label for="email">E-mail corporativo</label><input id="email" type="email" required maxlength="160" autocomplete="email" placeholder="nome@claro.com.br">
 <div class="grid"><div><label for="senha">Senha</label><input id="senha" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div><div><label for="confirmar">Confirmar senha</label><input id="confirmar" type="password" required minlength="8" maxlength="128" autocomplete="new-password"></div></div>
 <div class="acoes"><button class="principal" id="gerar" type="submit">Gerar solicitação</button><a class="btn secundario" href="index.html">Voltar para a Torre</a></div>
 </form>
 <div id="msg" class="msg" role="alert"></div>
-<div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Envie o arquivo JSON baixado ao administrador da Torre para aprovação e publicação.</p><div class="acoes"><button id="baixarNovamente" class="principal" type="button">Baixar novamente</button><button id="copiarToken" class="secundario" type="button">Copiar código</button></div></div>
+<div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Envie o arquivo JSON baixado ao administrador da Torre para aprovação e publicação.</p><div class="acoes"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro por e-mail</button><button id="baixarNovamente" class="secundario" type="button">Baixar novamente</button><button id="copiarToken" class="secundario" type="button">Copiar código</button></div>
+<p class="nota">Ao clicar em Enviar cadastro por e-mail, o arquivo será baixado novamente e uma mensagem padrão será aberta para o administrador. Anexe o arquivo JSON baixado antes de enviar.</p></div>
 </section></main>
 <script>
 const ITERACOES=600000;let ultimoArquivo=null,ultimoNome='',ultimoToken='';
 const $=id=>document.getElementById(id);const bhex=b=>Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join('');
 const normNome=v=>v.trim().replace(/\s+/g,' ').normalize('NFKC').toLowerCase();
 const normEmail=v=>v.trim().normalize('NFKC').toLowerCase();
+const normUsuario=v=>v.trim().normalize('NFKC').toUpperCase().replace(/[^A-Z0-9]/g,'');
 async function sha(t){return bhex(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t))))}
 async function pbkdf2(p,s,it){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(p),'PBKDF2',false,['deriveBits']);return bhex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new Uint8Array(s.match(/.{1,2}/g).map(x=>parseInt(x,16))),iterations:it},k,256)))}
 function aleatorioHex(n){const b=new Uint8Array(n);crypto.getRandomValues(b);return bhex(b)}
 function tokenAtivacao(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',b=new Uint8Array(16);crypto.getRandomValues(b);let t='';for(let i=0;i<16;i++)t+=chars[b[i]%chars.length];return t.match(/.{1,4}/g).join('-')}
 function aviso(txt,tipo){$('msg').textContent=txt;$('msg').className='msg '+tipo}
 function baixar(obj,nome){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=nome;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-$('formCadastro').addEventListener('submit',async e=>{e.preventDefault();const nomeEx=$('nome').value.trim().replace(/\s+/g,' '),email=normEmail($('email').value),senha=$('senha').value,confirmar=$('confirmar').value;if(!email.endsWith('@claro.com.br'))return aviso('Informe um e-mail corporativo com o domínio @claro.com.br.','erro');if(senha!==confirmar)return aviso('A confirmação da senha não corresponde à senha informada.','erro');if(senha.length<8)return aviso('A senha deve ter pelo menos 8 caracteres.','erro');const btn=$('gerar');btn.disabled=true;btn.textContent='Gerando...';try{const salt=aleatorioHex(16),token=tokenAtivacao();const [nomeHash,emailHash,senhaHash,tokenHash]=await Promise.all([sha(normNome(nomeEx)),sha(email),pbkdf2(senha,salt,ITERACOES),sha(token.replace(/-/g,''))]);const pedido={tipo:'solicitacao_cadastro_torre',versao:1,criado_em:new Date().toISOString(),registro:{nome_hash:nomeHash,email_hash:emailHash,senha_hash:senhaHash,salt,iteracoes:ITERACOES,codigo_dispositivo_hash:tokenHash,ativo:false,status:'PENDENTE'}};const nomeArq='solicitacao_cadastro_torre_'+Date.now()+'.json';ultimoArquivo=pedido;ultimoNome=nomeArq;ultimoToken=token;$('token').textContent=token;$('resultado').style.display='block';baixar(pedido,nomeArq);aviso('Arquivo gerado e baixado com sucesso.','ok');senha='';$('senha').value='';$('confirmar').value=''}catch(err){aviso('Não foi possível gerar a solicitação neste navegador.','erro')}finally{btn.disabled=false;btn.textContent='Gerar solicitação'}});
+$('usuario').addEventListener('input',()=>{$('usuario').value=normUsuario($('usuario').value)});
+$('formCadastro').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const nomeCompleto=$('nome').value.trim().replace(/\s+/g,' '),usuario=normUsuario($('usuario').value),email=normEmail($('email').value),senha=$('senha').value,confirmar=$('confirmar').value;
+  if(!usuario)return aviso('Informe um nome de usuário usando letras e números, sem espaços.','erro');
+  if($('usuario').value!==usuario)return aviso('O nome de usuário deve estar em maiúsculas e sem espaços ou caracteres especiais.','erro');
+  if(!email.endsWith('@claro.com.br'))return aviso('Informe um e-mail corporativo com o domínio @claro.com.br.','erro');
+  if(senha!==confirmar)return aviso('A confirmação da senha não corresponde à senha informada.','erro');
+  if(senha.length<8)return aviso('A senha deve ter pelo menos 8 caracteres.','erro');
+  const btn=$('gerar');btn.disabled=true;btn.textContent='Gerando...';
+  try{
+    const salt=aleatorioHex(16),token=tokenAtivacao();
+    const [nomeHash,emailHash,senhaHash,tokenHash]=await Promise.all([sha(normNome(usuario)),sha(email),pbkdf2(senha,salt,ITERACOES),sha(token.replace(/-/g,''))]);
+    const pedido={tipo:'solicitacao_cadastro_torre',versao:2,criado_em:new Date().toISOString(),solicitante:{nome_completo:nomeCompleto,usuario,email},registro:{nome_hash:nomeHash,email_hash:emailHash,senha_hash:senhaHash,salt,iteracoes:ITERACOES,codigo_dispositivo_hash:tokenHash,ativo:false,status:'PENDENTE'}};
+    const nomeArq='solicitacao_cadastro_torre_'+usuario+'_'+Date.now()+'.json';
+    ultimoArquivo=pedido;ultimoNome=nomeArq;ultimoToken=token;$('token').textContent=token;$('resultado').style.display='block';
+    baixar(pedido,nomeArq);aviso('Arquivo gerado e baixado com sucesso.','ok');$('senha').value='';$('confirmar').value='';
+  }catch(err){aviso('Não foi possível gerar a solicitação neste navegador.','erro')}
+  finally{btn.disabled=false;btn.textContent='Gerar solicitação'}
+});
 $('baixarNovamente').onclick=()=>ultimoArquivo&&baixar(ultimoArquivo,ultimoNome);$('copiarToken').onclick=async()=>{await navigator.clipboard.writeText(ultimoToken);aviso('Código copiado.','ok')};
+
+$('enviarCadastro').onclick=()=>{
+  if(!ultimoArquivo)return aviso('Gere a solicitação antes de enviar.','erro');
+  baixar(ultimoArquivo,ultimoNome);
+  const solicitante=ultimoArquivo.solicitante;
+  const assunto='Solicitação de cadastro | Torre de Controle | '+solicitante.usuario;
+  const corpo='Olá, André!%0D%0A%0D%0ASegue minha solicitação de cadastro para acesso à Torre de Controle.%0D%0A%0D%0ANome completo: '+encodeURIComponent(solicitante.nome_completo)+'%0D%0ANome de usuário: '+encodeURIComponent(solicitante.usuario)+'%0D%0AE-mail corporativo: '+encodeURIComponent(solicitante.email)+'%0D%0A%0D%0AAnexei o arquivo JSON gerado pelo portal para análise e aprovação.%0D%0A%0D%0AObrigado.';
+  window.location.href='mailto:andre.dikman@claro.com.br?subject='+encodeURIComponent(assunto)+'&body='+corpo;
+  aviso('A mensagem foi aberta. Anexe o arquivo JSON baixado e clique em Enviar.','ok');
+};
+
 </script></body></html>
