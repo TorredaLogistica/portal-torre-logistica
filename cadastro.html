@@ -29,7 +29,7 @@ label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width
 <div class="acoes"><button class="principal" id="gerar" type="submit">Gerar solicitação</button><a class="btn secundario" href="index.html">Voltar para a Torre</a></div>
 </form>
 <div id="msg" class="msg" role="alert"></div>
-<div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Clique em Enviar cadastro por e-mail para baixar o JSON e abrir a mensagem ao administrador da Torre.</p><div class="acoes"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro por e-mail</button><button id="copiarToken" class="secundario" type="button">Copiar código</button></div>
+<div id="resultado" class="resultado"><h2>Solicitação gerada</h2><p>Guarde o código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p><div id="token" class="token"></div><p class="nota">A senha não está no arquivo em formato legível. Clique em Enviar cadastro por e-mail para baixar o JSON e abrir a mensagem ao administrador da Torre.</p><div class="acoes"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro por e-mail</button><button id="salvarToken" class="secundario" type="button">Salvar código</button></div>
 <p class="nota">Ao clicar em Enviar cadastro por e-mail, o arquivo JSON será baixado uma única vez e uma nova janela do Outlook Web será aberta com destinatário, assunto e mensagem preenchidos. Anexe o JSON baixado e clique em Enviar.</p></div>
 </section></main>
 <script>
@@ -60,11 +60,18 @@ $('formCadastro').addEventListener('submit',async e=>{
     const pedido={tipo:'solicitacao_cadastro_torre',versao:2,criado_em:new Date().toISOString(),solicitante:{nome_completo:nomeCompleto,usuario,email},registro:{nome_hash:nomeHash,email_hash:emailHash,senha_hash:senhaHash,salt,iteracoes:ITERACOES,codigo_dispositivo_hash:tokenHash,ativo:false,status:'PENDENTE'}};
     const nomeArq='solicitacao_cadastro_torre_'+usuario+'_'+Date.now()+'.json';
     ultimoArquivo=pedido;ultimoNome=nomeArq;ultimoToken=token;$('token').textContent=token;$('resultado').style.display='block';
-    aviso('Solicitação gerada com sucesso. Clique em Enviar cadastro por e-mail para baixar o JSON e abrir o Outlook Web.','ok');$('senha').value='';$('confirmar').value='';
+    aviso('Solicitação gerada com sucesso. Salve o código e clique em Enviar cadastro por e-mail.','ok');$('senha').value='';$('confirmar').value='';
   }catch(err){aviso('Não foi possível gerar a solicitação neste navegador.','erro')}
   finally{btn.disabled=false;btn.textContent='Gerar solicitação'}
 });
-$('copiarToken').onclick=async()=>{await navigator.clipboard.writeText(ultimoToken);aviso('Código copiado.','ok')};
+$('salvarToken').onclick=()=>{
+  if(!ultimoToken||!ultimoArquivo)return aviso('Gere a solicitação antes de salvar o código.','erro');
+  const solicitante=ultimoArquivo.solicitante;
+  const conteudo='TORRE DE CONTROLE - CÓDIGO DE PRIMEIRO ACESSO\r\n\r\nNome completo: '+solicitante.nome_completo+'\r\nNome de usuário: '+solicitante.usuario+'\r\nE-mail corporativo: '+solicitante.email+'\r\nCódigo de ativação: '+ultimoToken+'\r\n\r\nGuarde este arquivo. O código será solicitado somente na primeira ativação do navegador.';
+  const blob=new Blob([conteudo],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='codigo_primeiro_acesso_'+solicitante.usuario+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  aviso('Código salvo em arquivo TXT. Guarde-o para a primeira ativação.','ok');
+};
 
 $('enviarCadastro').onclick=()=>{
   if(!ultimoArquivo)return aviso('Gere a solicitação antes de enviar.','erro');
@@ -74,10 +81,7 @@ $('enviarCadastro').onclick=()=>{
   const corpoTexto='Olá, André!\n\nSegue minha solicitação de cadastro para acesso à Torre de Controle.\n\nNome completo: '+solicitante.nome_completo+'\nNome de usuário: '+solicitante.usuario+'\nE-mail corporativo: '+solicitante.email+'\n\nAnexe o arquivo JSON que acabou de ser baixado e envie esta mensagem para análise e aprovação.\n\nObrigado.';
   const outlookUrl='https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent('andre.dikman@claro.com.br')+'&subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpoTexto);
   const janelaOutlook=window.open(outlookUrl,'_blank','noopener,noreferrer');
-  if(!janelaOutlook){
-    aviso('O navegador bloqueou a nova janela. Permita pop-ups para a Torre e tente novamente.','erro');
-    return;
-  }
+  if(!janelaOutlook){aviso('O navegador bloqueou a nova janela. Permita pop-ups para a Torre e tente novamente.','erro');return;}
   aviso('O Outlook Web foi aberto em uma nova janela. Anexe o arquivo JSON baixado e clique em Enviar.','ok');
 };
 
