@@ -237,6 +237,11 @@ body.locked {
 }
 
 .cadastro-conta{margin-top:14px;color:#374151;font-size:15px;line-height:1.4}.cadastro-conta a{color:#0563c1;font-weight:700;text-decoration:none}.cadastro-conta a:hover{text-decoration:underline}.cadastro-orientacao{margin-top:5px;color:#6b7280;font-size:11px;line-height:1.35}
+
+.cadastro-alerta-seguranca{margin:12px auto 0;padding:10px 12px;max-width:360px;border:1px solid #fecaca;border-radius:10px;background:#fff7f7;color:#4b5563;font-size:11px;line-height:1.45;text-align:left}
+.cadastro-alerta-seguranca .alerta-titulo{display:inline-flex;align-items:center;gap:5px;color:#c70000;font-weight:800}
+.cadastro-alerta-seguranca .alerta-icone{font-size:15px;line-height:1}
+
 </style>
 </head>
 <body class="locked">
@@ -259,6 +264,10 @@ body.locked {
     <div class="login-actions"><button type="button" id="btnEntrar" onclick="validarAcesso()">Entrar</button></div>
     <div class="cadastro-conta">Ainda não tem acesso? <a href="cadastro.html" target="_blank" rel="noopener noreferrer">Cadastrar!</a></div>
     <div class="cadastro-orientacao">Preencha o cadastro online. Nenhuma instalação é necessária.</div>
+    <div class="cadastro-alerta-seguranca" role="note" aria-label="Atenção sobre recuperação de acesso">
+      <span class="alerta-titulo"><span class="alerta-icone" aria-hidden="true">⚠️</span>Atenção!</span>
+      Em caso de esquecimento do nome de usuário ou da senha, será necessário realizar um novo cadastro para restabelecer o acesso.
+    </div>
     <div id="erro" class="erro" role="alert" aria-live="polite"></div>
     <div class="aviso-privacidade">A senha não é armazenada nem registrada pelo portal.</div>
   </div>
