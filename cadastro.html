@@ -11,7 +11,7 @@ header{background:var(--azul);color:#fff;padding:18px 24px;font-weight:700;font-
 main{max-width:720px;margin:32px auto;padding:0 18px}.box{background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 32px rgba(0,0,0,.12)}
 h1{margin:0 0 8px;color:var(--azul);font-size:27px}.sub{margin:0 0 24px;color:#667085;line-height:1.5}
 label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width:100%;height:46px;border:1px solid #cfd6e4;border-radius:10px;padding:0 13px;font-size:15px}input:focus{outline:0;border-color:var(--azul);box-shadow:0 0 0 3px rgba(31,53,92,.12)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.acoes{display:flex;gap:10px;margin-top:24px}button,a.btn{min-height:46px;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}.principal{background:var(--vermelho);color:#fff;flex:1}.secundario{background:#fff;color:var(--azul);border:1px solid #cfd6e4!important}.msg{margin-top:16px;padding:12px 14px;border-radius:10px;display:none;line-height:1.45}.erro{display:block;background:#fff1f2;color:#b42318;border:1px solid #fecdd3}.ok{display:block;background:#ecfdf3;color:#027a48;border:1px solid #a6f4c5}.resultado{display:none;margin-top:22px;padding:18px;border:1px solid #a6f4c5;background:#f6fef9;border-radius:12px}.resultado h2{margin:0 0 10px;color:#027a48;font-size:20px}.token-linha{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch;margin:12px 0}.token{font-family:monospace;font-size:22px;letter-spacing:1px;background:#fff;border:1px dashed #667085;border-radius:9px;padding:12px;text-align:center;word-break:break-all;display:flex;align-items:center;justify-content:center}.salvar-token{white-space:nowrap;margin:0}.acao-email{margin-top:22px}.acao-email .principal{width:100%}.nota{font-size:12px;color:#667085;line-height:1.45}.status{font-size:13px;color:#667085;margin-top:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.acoes{display:flex;gap:10px;margin-top:24px}button,a.btn{min-height:46px;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}.principal{background:var(--vermelho);color:#fff;flex:1}.secundario{background:#fff;color:var(--azul);border:1px solid #cfd6e4!important}.msg{margin-top:16px;padding:12px 14px;border-radius:10px;display:none;line-height:1.45}.erro{display:block;background:#fff1f2;color:#b42318;border:1px solid #fecdd3}.ok{display:block;background:#ecfdf3;color:#027a48;border:1px solid #a6f4c5}.resultado{display:none;margin-top:22px;padding:18px;border:1px solid #a6f4c5;background:#f6fef9;border-radius:12px}.resultado h2{margin:0 0 10px;color:#027a48;font-size:20px}.token-linha{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch;margin:12px 0}.token{font-family:monospace;font-size:22px;letter-spacing:1px;background:#fff;border:1px dashed #667085;border-radius:9px;padding:12px;text-align:center;word-break:break-all;display:flex;align-items:center;justify-content:center}.salvar-token{white-space:nowrap;margin:0}.acao-email{margin-top:22px}.acao-email .principal{width:100%;min-height:58px;font-size:17px;box-shadow:0 5px 12px rgba(230,0,0,.20)}.envio-obrigatorio{margin-top:14px;padding:14px 15px;border:1px solid #f5b5b5;border-left:5px solid var(--vermelho);border-radius:10px;background:#fff7f7;color:#374151;font-size:13px;line-height:1.55}.envio-obrigatorio strong{color:#c70000}.envio-obrigatorio .passos{display:block;margin-top:5px;color:#4b5563}.nota{font-size:12px;color:#667085;line-height:1.45}.status{font-size:13px;color:#667085;margin-top:8px}
 @media(max-width:620px){.grid{grid-template-columns:1fr}.acoes{flex-direction:column}.token-linha{grid-template-columns:1fr}.salvar-token{width:100%}}
 </style>
 </head>
@@ -32,8 +32,11 @@ label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width
 <div id="resultado" class="resultado">
 <p>Salve esse código abaixo. Ele será solicitado somente na primeira ativação do navegador:</p>
 <div class="token-linha"><div id="token" class="token"></div><button id="salvarToken" class="secundario salvar-token" type="button">Salvar código</button></div>
-<div class="acao-email"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro por e-mail</button></div>
-<p class="nota">Ao clicar em Enviar cadastro por e-mail, o arquivo JSON será baixado uma única vez e uma nova janela do Outlook Web será aberta com destinatário, assunto e mensagem preenchidos. Anexe o JSON baixado e clique em Enviar.</p>
+<div class="acao-email"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro para aprovação</button></div>
+<div class="envio-obrigatorio" role="note" aria-label="Envio obrigatório para aprovação">
+<strong>⚠️ Envio obrigatório:</strong> o cadastro somente será analisado e aprovado após o envio do arquivo JSON por e-mail ao administrador.
+<span class="passos">Clique no botão acima, anexe o arquivo JSON que será baixado automaticamente e envie a mensagem pelo Outlook Web.</span>
+</div>
 </div>
 </section></main>
 <script>
@@ -86,7 +89,7 @@ $('enviarCadastro').onclick=()=>{
   const outlookUrl='https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent('andre.dikman@claro.com.br')+'&subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpoTexto);
   const janelaOutlook=window.open(outlookUrl,'_blank','noopener,noreferrer');
   if(!janelaOutlook){aviso('O navegador bloqueou a nova janela. Permita pop-ups para a Torre e tente novamente.','erro');return;}
-  aviso('O Outlook Web foi aberto em uma nova janela. Anexe o arquivo JSON baixado e clique em Enviar.','ok');
+  aviso('O Outlook Web foi aberto. Anexe o arquivo JSON baixado e envie a mensagem para concluir a solicitação.','ok');
 };
 
 </script></body></html>
