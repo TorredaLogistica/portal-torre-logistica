@@ -88,7 +88,7 @@ $('enviarCadastro').onclick=()=>{
   const corpoTexto='Olá, André!\n\nSegue minha solicitação de cadastro para acesso à Torre de Controle.\n\nNome completo: '+solicitante.nome_completo+'\nNome de usuário: '+solicitante.usuario+'\nE-mail corporativo: '+solicitante.email+'\n\nAnexe o arquivo JSON que acabou de ser baixado e envie esta mensagem para análise e aprovação.\n\nObrigado.';
   const outlookUrl='https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent('andre.dikman@claro.com.br')+'&subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpoTexto);
   const janelaOutlook=window.open(outlookUrl,'_blank','noopener,noreferrer');
-  if(!janelaOutlook){aviso('O navegador bloqueou a nova janela. Permita pop-ups para a Torre e tente novamente.','erro');return;}
+  if(!janelaOutlook){aviso('Obrigado pelo envio das informações. Em breve, você receberá um e-mail informando a aprovação do seu acesso à Torre.','erro');return;}
   aviso('O Outlook Web foi aberto. Anexe o arquivo JSON baixado e envie a mensagem para concluir a solicitação.','ok');
 };
 
