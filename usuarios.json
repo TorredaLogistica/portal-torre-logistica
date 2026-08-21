@@ -1,5 +1,5 @@
 {
-  "versao": 16,
+  "versao": 17,
   "usuarios": [
     {
       "nome_hash": "8b18e706405ac85680c2685c8f404dd04f36f6a2a4dd0fed88d45cdb63bbf9a9",
@@ -70,7 +70,17 @@
       "codigo_dispositivo_hash": "ac230f129f5722a9103ed5a63d9dcb195fa20ca5dcf6edc47e023bd7232f1ee9",
       "ativo": true,
       "aprovado_em": "2026-08-21T19:02:13.929Z"
+    },
+    {
+      "nome_hash": "09e937fd9ece87c5c98ab0eca2c7c97e09370ccb1f9dc5e4f847f970284bf18c",
+      "email_hash": "5728d35b3141aaeaff73a49afd7c041357301a63276dbf855a54a43eb67684e7",
+      "senha_hash": "1435929fbb0f71d6301e7671d05f3544e67e8e5b55fe8f2693de0b4781e66c74",
+      "salt": "bc2ede802c7a6c4ab02d996be4300c9d",
+      "iteracoes": 600000,
+      "codigo_dispositivo_hash": "8c6d570dfd11faa83c2a0acdef1a3e99235f6b1cc299204f029dd66cfca435b6",
+      "ativo": true,
+      "aprovado_em": "2026-08-21T19:53:36.242Z"
     }
   ],
-  "atualizado_em": "2026-08-21T19:02:13.929Z"
+  "atualizado_em": "2026-08-21T19:53:36.242Z"
 }
