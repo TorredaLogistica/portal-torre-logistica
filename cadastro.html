@@ -119,7 +119,7 @@ $('enviarCadastro').onclick=()=>{
   if(!$('confirmarAnexo').checked)return aviso('Confirme que anexará o arquivo JSON antes de continuar.','erro');
   baixar(ultimoArquivo,ultimoNome);
   const solicitante=ultimoArquivo.solicitante;
-  const assunto='[ANEXAR JSON] Solicitação de cadastro | Torre de Controle | '+solicitante.usuario;
+  const assunto='Solicitação de cadastro | Torre de Controle | '+solicitante.usuario;
   const corpoTexto='𝗜𝗠𝗣𝗢𝗥𝗧𝗔𝗡𝗧𝗘: antes de enviar, anexe o arquivo JSON baixado pelo Portal Torre e envie esta mensagem para análise e aprovação.\n\nOlá, André!\n\nSegue minha solicitação de cadastro para acesso à Torre de Controle.\n\nNome completo: '+solicitante.nome_completo+'\nNome de usuário: '+solicitante.usuario+'\nE-mail corporativo: '+solicitante.email+'\n\nObrigado.';
   const outlookUrl='https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent('andre.dikman@claro.com.br')+'&subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpoTexto);
   const janelaOutlook=window.open(outlookUrl,'_blank','noopener,noreferrer');
