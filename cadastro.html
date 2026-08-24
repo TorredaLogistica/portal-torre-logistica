@@ -11,7 +11,7 @@ header{background:var(--azul);color:#fff;padding:18px 24px;font-weight:700;font-
 main{max-width:720px;margin:32px auto;padding:0 18px}.box{background:#fff;border-radius:18px;padding:28px;box-shadow:0 12px 32px rgba(0,0,0,.12)}
 h1{margin:0 0 8px;color:var(--azul);font-size:27px}.sub{margin:0 0 24px;color:#667085;line-height:1.5}
 label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width:100%;height:46px;border:1px solid #cfd6e4;border-radius:10px;padding:0 13px;font-size:15px}input:focus{outline:0;border-color:var(--azul);box-shadow:0 0 0 3px rgba(31,53,92,.12)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.acoes{display:flex;gap:10px;margin-top:24px}button,a.btn{min-height:46px;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}.principal{background:var(--vermelho);color:#fff;flex:1}.secundario{background:#fff;color:var(--azul);border:1px solid #cfd6e4!important}.msg{margin-top:16px;padding:12px 14px;border-radius:10px;display:none;line-height:1.45}.erro{display:block;background:#fff1f2;color:#b42318;border:1px solid #fecdd3}.ok{display:block;background:#ecfdf3;color:#027a48;border:1px solid #a6f4c5}.resultado{display:none;margin-top:22px;padding:18px;border:1px solid #a6f4c5;background:#f6fef9;border-radius:12px}.resultado h2{margin:0 0 10px;color:#027a48;font-size:20px}.token-linha{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch;margin:12px 0}.token{font-family:monospace;font-size:22px;letter-spacing:1px;background:#fff;border:1px dashed #667085;border-radius:9px;padding:12px;text-align:center;word-break:break-all;display:flex;align-items:center;justify-content:center}.salvar-token{white-space:nowrap;margin:0}.acao-email{margin-top:22px}.acao-email .principal{width:100%;min-height:58px;font-size:17px;box-shadow:0 5px 12px rgba(230,0,0,.20)}.envio-obrigatorio{margin-top:14px;padding:14px 15px;border:1px solid #f5b5b5;border-left:5px solid var(--vermelho);border-radius:10px;background:#fff7f7;color:#374151;font-size:13px;line-height:1.55}.envio-obrigatorio strong{color:#c70000}.envio-obrigatorio .passos{display:block;margin-top:5px;color:#4b5563}.nota{font-size:12px;color:#667085;line-height:1.45}.status{font-size:13px;color:#667085;margin-top:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.acoes{display:flex;gap:10px;margin-top:24px}button,a.btn{min-height:46px;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}.principal{background:var(--vermelho);color:#fff;flex:1}.secundario{background:#fff;color:var(--azul);border:1px solid #cfd6e4!important}.msg{margin-top:16px;padding:12px 14px;border-radius:10px;display:none;line-height:1.45}.erro{display:block;background:#fff1f2;color:#b42318;border:1px solid #fecdd3}.ok{display:block;background:#ecfdf3;color:#027a48;border:1px solid #a6f4c5}.resultado{display:none;margin-top:22px;padding:18px;border:1px solid #a6f4c5;background:#f6fef9;border-radius:12px}.resultado h2{margin:0 0 10px;color:#027a48;font-size:20px}.token-linha{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch;margin:12px 0}.token{font-family:monospace;font-size:22px;letter-spacing:1px;background:#fff;border:1px dashed #667085;border-radius:9px;padding:12px;text-align:center;word-break:break-all;display:flex;align-items:center;justify-content:center}.salvar-token{white-space:nowrap;margin:0}.acao-email{margin-top:22px}.acao-email .principal{width:100%;min-height:58px;font-size:17px;box-shadow:0 5px 12px rgba(230,0,0,.20)}.envio-obrigatorio{margin-top:14px;padding:14px 15px;border:1px solid #f5b5b5;border-left:5px solid var(--vermelho);border-radius:10px;background:#fff7f7;color:#374151;font-size:13px;line-height:1.55}.envio-obrigatorio strong{color:#c70000}.envio-obrigatorio .passos{display:block;margin-top:5px;color:#4b5563}.confirmacao-anexo{display:flex;align-items:flex-start;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid #f5b5b5;color:#7a271a;font-weight:700;cursor:pointer}.confirmacao-anexo input{width:19px;height:19px;min-width:19px;margin:1px 0 0;cursor:pointer}.acao-email .principal:disabled{background:#a9a9a9;box-shadow:none;cursor:not-allowed;opacity:.75}.nota{font-size:12px;color:#667085;line-height:1.45}.status{font-size:13px;color:#667085;margin-top:8px}
 @media(max-width:620px){.grid{grid-template-columns:1fr}.acoes{flex-direction:column}.token-linha{grid-template-columns:1fr}.salvar-token{width:100%}}
 </style>
 </head>
@@ -34,9 +34,13 @@ label{display:block;margin:15px 0 7px;font-weight:700;font-size:14px}input{width
 <div class="token-linha"><div id="token" class="token"></div><button id="salvarToken" class="secundario salvar-token" type="button">Salvar código</button></div>
 <div class="envio-obrigatorio" role="note" aria-label="Envio obrigatório para aprovação">
 <strong>⚠️ Envio obrigatório:</strong> o cadastro somente será analisado e aprovado após o envio do arquivo JSON por e-mail ao administrador.
-<span class="passos">Clique no botão abaixo, anexe o arquivo JSON que será baixado automaticamente e envie a mensagem pelo Outlook Web.</span>
+<span class="passos">Ao continuar, o arquivo JSON será baixado e o Outlook Web será aberto. Anexe o arquivo à mensagem antes de enviá-la.</span>
+<label class="confirmacao-anexo" for="confirmarAnexo">
+<input id="confirmarAnexo" type="checkbox">
+<span>Confirmo que anexarei o arquivo JSON antes de enviar o e-mail.</span>
+</label>
 </div>
-<div class="acao-email"><button id="enviarCadastro" class="principal" type="button">Enviar cadastro para aprovação</button></div>
+<div class="acao-email"><button id="enviarCadastro" class="principal" type="button" disabled>Abrir Outlook e enviar cadastro</button></div>
 </div>
 </section></main>
 <script>
@@ -66,7 +70,7 @@ $('formCadastro').addEventListener('submit',async e=>{
     const [nomeHash,emailHash,senhaHash,tokenHash]=await Promise.all([sha(normNome(usuario)),sha(email),pbkdf2(senha,salt,ITERACOES),sha(token.replace(/-/g,''))]);
     const pedido={tipo:'solicitacao_cadastro_torre',versao:2,criado_em:new Date().toISOString(),solicitante:{nome_completo:nomeCompleto,usuario,email},registro:{nome_hash:nomeHash,email_hash:emailHash,senha_hash:senhaHash,salt,iteracoes:ITERACOES,codigo_dispositivo_hash:tokenHash,ativo:false,status:'PENDENTE'}};
     const nomeArq='solicitacao_cadastro_torre_'+usuario+'_'+Date.now()+'.json';
-    ultimoArquivo=pedido;ultimoNome=nomeArq;ultimoToken=token;$('token').textContent=token;$('resultado').style.display='block';
+    ultimoArquivo=pedido;ultimoNome=nomeArq;ultimoToken=token;$('token').textContent=token;$('resultado').style.display='block';$('confirmarAnexo').checked=false;$('enviarCadastro').disabled=true;
     aviso('Solicitação gerada com sucesso.','ok');$('senha').value='';$('confirmar').value='';
   }catch(err){aviso('Não foi possível gerar a solicitação neste navegador.','erro')}
   finally{btn.disabled=false;btn.textContent='Gerar solicitação'}
@@ -80,16 +84,20 @@ $('salvarToken').onclick=()=>{
   aviso('Código salvo em arquivo TXT. Guarde-o para a primeira ativação.','ok');
 };
 
+$('confirmarAnexo').addEventListener('change',()=>{
+  $('enviarCadastro').disabled=!$('confirmarAnexo').checked;
+});
 $('enviarCadastro').onclick=()=>{
   if(!ultimoArquivo)return aviso('Gere a solicitação antes de enviar.','erro');
+  if(!$('confirmarAnexo').checked)return aviso('Confirme que anexará o arquivo JSON antes de continuar.','erro');
   baixar(ultimoArquivo,ultimoNome);
   const solicitante=ultimoArquivo.solicitante;
   const assunto='Solicitação de cadastro | Torre de Controle | '+solicitante.usuario;
-  const corpoTexto='Olá, André!\n\nSegue minha solicitação de cadastro para acesso à Torre de Controle.\n\nNome completo: '+solicitante.nome_completo+'\nNome de usuário: '+solicitante.usuario+'\nE-mail corporativo: '+solicitante.email+'\n\nAnexe o arquivo JSON que acabou de ser baixado e envie esta mensagem para análise e aprovação.\n\nObrigado.';
+  const corpoTexto='𝗜𝗠𝗣𝗢𝗥𝗧𝗔𝗡𝗧𝗘: antes de enviar, anexe o arquivo JSON baixado pelo Portal Torre e envie esta mensagem para análise e aprovação.\n\nOlá, André!\n\nSegue minha solicitação de cadastro para acesso à Torre de Controle.\n\nNome completo: '+solicitante.nome_completo+'\nNome de usuário: '+solicitante.usuario+'\nE-mail corporativo: '+solicitante.email+'\n\nObrigado.';
   const outlookUrl='https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent('andre.dikman@claro.com.br')+'&subject='+encodeURIComponent(assunto)+'&body='+encodeURIComponent(corpoTexto);
   const janelaOutlook=window.open(outlookUrl,'_blank','noopener,noreferrer');
   if(!janelaOutlook){aviso('Obrigado pelo envio das informações. Em breve, você receberá um e-mail informando a aprovação do seu acesso à Torre.','erro');return;}
-  aviso('O Outlook Web foi aberto. Anexe o arquivo JSON baixado e envie a mensagem para concluir a solicitação.','ok');
+  aviso('O Outlook Web foi aberto. Anexe o arquivo JSON baixado antes de enviar a mensagem.','ok');
 };
 
 </script></body></html>
