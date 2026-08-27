@@ -254,18 +254,29 @@ header,.header{position:relative;min-height:86px!important;padding:10px 26px!imp
   position:fixed;
   inset:86px 0 0;
   z-index:-1;
-  background-color:#d83a2f;
-  background-image:linear-gradient(rgba(181,31,37,.26),rgba(244,123,69,.26)),url('fundo pagina.jpg');
-  background-position:center center,center 72%;
-  background-size:cover,65% auto;
+  background-image:linear-gradient(rgba(238,240,243,.22),rgba(238,240,243,.22)),url('fundo pagina.jpg');
+  background-position:center center,center center;
+  background-size:cover,cover;
   background-repeat:no-repeat,no-repeat;
   pointer-events:none;
 }
-.card,.box{background:rgba(255,255,255,.94)!important;border:1px solid rgba(220,220,220,.85)!important}.card{border-radius:16px!important}.card:hover{box-shadow:0 12px 28px rgba(0,0,0,.14)!important}.icon{background:linear-gradient(145deg,#ed3025,#c51f25)!important;box-shadow:0 6px 14px rgba(218,41,28,.22)}
+.card,.box{background:rgba(255,255,255,.91)!important;border:1px solid rgba(220,220,220,.85)!important}.card{border-radius:16px!important}.card:hover{box-shadow:0 12px 28px rgba(0,0,0,.14)!important}.icon{background:linear-gradient(145deg,#ed3025,#c51f25)!important;box-shadow:0 6px 14px rgba(218,41,28,.22)}
 button,.principal{background:var(--claro-red)!important;color:#fff!important}button:not(:disabled):hover,.principal:not(:disabled):hover{background:var(--claro-red-dark)!important}.sec,.secundario{background:#fff!important;color:#333!important;border:1px solid #c9c9c9!important}.verde{background:#087a4b!important}
 input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(218,41,28,.13)!important}h1,h2{color:#303030!important}
-@media(max-width:650px){header,.header{min-height:76px!important;padding:9px 15px!important}.brand-logo-img{width:60px}.brand-wrap{gap:12px}.brand-separator{height:34px}.brand-name{font-size:15px}.container:before{inset:76px 0 0;background-size:cover,82% auto;background-position:center center,center 76%}.user-area{gap:7px!important;font-size:12px!important}}
+@media(max-width:650px){header,.header{min-height:76px!important;padding:9px 15px!important}.brand-logo-img{width:60px}.brand-wrap{gap:12px}.brand-separator{height:34px}.brand-name{font-size:15px}.container:before{inset:76px 0 0;background-size:cover,cover;background-position:center center,center center}.user-area{gap:7px!important;font-size:12px!important}}
 
+
+/* Navegacao por areas operacionais */
+.header{flex-wrap:wrap;row-gap:8px}
+.area-tabs{order:3;flex:0 0 100%;display:flex;align-items:center;gap:8px;padding-left:105px}
+.area-tab{min-height:34px;padding:7px 18px;border:1px solid rgba(255,255,255,.62)!important;border-radius:18px;background:rgba(255,255,255,.10)!important;color:#fff!important;font-size:14px;font-weight:700;cursor:pointer;box-shadow:none!important;transition:background .18s ease,color .18s ease,transform .18s ease}
+.area-tab:hover{background:rgba(255,255,255,.22)!important;transform:translateY(-1px)}
+.area-tab.active{background:#fff!important;color:var(--claro-red)!important;border-color:#fff!important;box-shadow:0 4px 10px rgba(90,0,0,.16)!important}
+.area-panel[hidden]{display:none!important}
+.area-empty{min-height:320px;display:flex;align-items:center;justify-content:center;padding:28px}
+.area-empty-card{width:min(560px,100%);padding:34px 26px;border:1px solid rgba(255,255,255,.70);border-radius:16px;background:rgba(255,255,255,.94);color:#303030;text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.13)}
+.area-empty-icon{font-size:38px;margin-bottom:10px}.area-empty-card h2{margin:0 0 8px;font-size:22px}.area-empty-card p{margin:0;color:#667085;line-height:1.5}
+@media(max-width:650px){.area-tabs{padding-left:0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}.area-tab{white-space:nowrap;flex:0 0 auto;padding:7px 14px;font-size:13px}.area-empty{min-height:260px;padding:18px 0}}
 </style>
 <style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:0;width:90px;height:90px;max-width:100%;border-radius:0;background:transparent!important;overflow:hidden;display:flex;align-items:center;justify-content:center}.login-brand img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;background:transparent}.login-box h2{color:#303030!important}</style></head>
 <body class="locked">
@@ -301,11 +312,17 @@ input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(21
 <!-- CABECALHO -->
 <div class="header">
     <div class="brand-wrap"><img class="brand-logo-img" src="logo_claro.png" alt="Claro"><span class="brand-separator" aria-hidden="true"></span><span class="brand-name">Central de Inteligência Operacional</span></div>
+    <nav class="area-tabs" aria-label="Áreas da logística">
+      <button type="button" class="area-tab active" data-area="armazenagem" aria-selected="true">Armazenagem</button>
+      <button type="button" class="area-tab" data-area="triagem" aria-selected="false">Triagem</button>
+      <button type="button" class="area-tab" data-area="reversa" aria-selected="false">Reversa</button>
+    </nav>
     <div id="userArea" class="user-area"><span>Usuário: <span id="nomeUsuario" class="user-name"></span></span><button type="button" class="logout-btn" onclick="sairPortal()">Sair</button></div>
 </div>
 
 <!-- CARDS DOS INDICADORES -->
 <div class="container">
+  <section id="area-armazenagem" class="area-panel" data-area-panel="armazenagem" aria-label="Indicadores de Armazenagem">
     <div class="grid">
 
         <!-- 1 - CHATBOT TORRE LOGISTICA -->
@@ -422,10 +439,27 @@ input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(21
             <div class="title">Forecast e Realizado</div>
         </a>
     </div>
+  </section>
+  <section id="area-triagem" class="area-panel" data-area-panel="triagem" aria-label="Indicadores de Triagem" hidden>
+    <div class="area-empty"><div class="area-empty-card"><div class="area-empty-icon" aria-hidden="true">📦</div><h2>Triagem</h2><p>Nenhum indicador disponível para a área de Triagem no momento.</p></div></div>
+  </section>
+  <section id="area-reversa" class="area-panel" data-area-panel="reversa" aria-label="Indicadores de Reversa" hidden>
+    <div class="area-empty"><div class="area-empty-card"><div class="area-empty-icon" aria-hidden="true">♻️</div><h2>Reversa</h2><p>Nenhum indicador disponível para a área de Reversa no momento.</p></div></div>
+  </section>
 </div>
 
 <!-- SCRIPT DA CAMADA DE SEGURANCA -->
 <script>
+function selecionarArea(area){
+  document.querySelectorAll('.area-tab').forEach(botao=>{
+    const ativa=botao.dataset.area===area;
+    botao.classList.toggle('active',ativa);
+    botao.setAttribute('aria-selected',ativa?'true':'false');
+  });
+  document.querySelectorAll('[data-area-panel]').forEach(painel=>{painel.hidden=painel.dataset.areaPanel!==area});
+}
+document.querySelectorAll('.area-tab').forEach(botao=>botao.addEventListener('click',()=>selecionarArea(botao.dataset.area)));
+selecionarArea('armazenagem');
 const CFG={ARQUIVO:'usuarios.json',MAX:5,BLOQUEIO:15,ITERACOES:600000};
 const CANAL_VERMELHO={
   URL:'https://cuencjwy3ahhnzymzsspuc.streamlit.app/',
