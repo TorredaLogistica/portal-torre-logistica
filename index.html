@@ -266,7 +266,7 @@ input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(21
 @media(max-width:650px){header,.header{min-height:76px!important;padding:9px 15px!important}.brand-logo-img{width:120px}.brand-wrap{gap:12px}.brand-separator{height:34px}.brand-name{font-size:15px}.container:before{inset:76px 0 0;background-size:cover,cover;background-position:center center,center center}.user-area{gap:7px!important;font-size:12px!important}}
 
 </style>
-<style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:8px 18px;width:max-content;max-width:100%;border-radius:12px;background:linear-gradient(180deg,#b51f25,#f47b45)}.login-brand img{display:block;width:170px;max-width:100%;height:auto}.login-box h2{color:#303030!important}</style></head>
+<style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:0;width:90px;height:90px;max-width:100%;border-radius:0;background:transparent!important;overflow:hidden;display:flex;align-items:center;justify-content:center}.login-brand img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;background:transparent}.login-box h2{color:#303030!important}</style></head>
 <body class="locked">
 
 <!-- CAMADA DE SEGURANCA -->
@@ -454,7 +454,7 @@ async function abrirCanalVermelho(event){
     alert('O navegador bloqueou a nova aba. Permita pop-ups para a Torre de Controle e tente novamente.');
     return;
   }
-  novaAba.document.write('<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><title>Preparando indicador</title><style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:8px 18px;width:max-content;max-width:100%;border-radius:12px;background:linear-gradient(180deg,#b51f25,#f47b45)}.login-brand img{display:block;width:170px;max-width:100%;height:auto}.login-box h2{color:#303030!important}</style></head><body style="font-family:Arial;text-align:center;padding:60px"><h2>Preparando o Indicador de Canal Vermelho...</h2><p>Aguarde alguns segundos.</p></body></html>');
+  novaAba.document.write('<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><title>Preparando indicador</title><style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:0;width:90px;height:90px;max-width:100%;border-radius:0;background:transparent!important;overflow:hidden;display:flex;align-items:center;justify-content:center}.login-brand img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;background:transparent}.login-box h2{color:#303030!important}</style></head><body style="font-family:Arial;text-align:center;padding:60px"><h2>Preparando o Indicador de Canal Vermelho...</h2><p>Aguarde alguns segundos.</p></body></html>');
   try{
     const ts=Math.floor(Date.now()/1000).toString();
     const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
