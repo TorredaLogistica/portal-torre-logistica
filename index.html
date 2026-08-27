@@ -359,6 +359,41 @@ input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(21
 .logistica-logo-img{display:block;width:165px;height:58px;object-fit:contain;object-position:center;background:transparent;flex:0 0 auto}
 @media(max-width:1000px){.logistica-logo-img{width:142px;height:50px}.brand-separator-logistica{height:40px!important}}
 @media(max-width:650px){.logistica-logo-img{width:110px;height:40px}.brand-separator-logistica{height:32px!important}}
+
+/* Alinhamento preciso do titulo, abas e logo Logistica */
+.header{
+  grid-template-columns:1fr minmax(520px,auto) 1fr!important;
+  grid-template-rows:auto auto!important;
+}
+.brand-wrap{
+  grid-column:1 / -1!important;
+  width:100%;
+  display:grid!important;
+  grid-template-columns:1fr minmax(520px,auto) 1fr;
+  align-items:center;
+  gap:0!important;
+}
+.brand-left{grid-column:1;justify-self:end;display:flex;align-items:center;gap:18px}
+.brand-center{grid-column:2;justify-self:center;text-align:center}
+.brand-right{grid-column:3;justify-self:start;display:flex;align-items:center;gap:18px}
+.area-tabs{grid-column:2!important;justify-self:center!important;padding-left:0!important}
+.brand-separator,.brand-separator-logistica{width:1px!important;height:44px!important;background:rgba(255,255,255,.62)!important;display:block;flex:0 0 1px}
+.logistica-logo-img{width:190px!important;height:52px!important;object-fit:contain;object-position:left center;background:transparent;display:block}
+@media(max-width:1100px){
+  .header{grid-template-columns:1fr!important;grid-template-rows:auto auto auto!important}
+  .brand-wrap{grid-template-columns:auto minmax(300px,auto) auto;width:auto;max-width:100%}
+  .brand-name{font-size:23px!important}
+  .logistica-logo-img{width:155px!important;height:46px!important}
+  .area-tabs{grid-column:1!important;grid-row:2!important}
+  .user-area{grid-column:1!important;grid-row:3!important}
+}
+@media(max-width:760px){
+  .brand-wrap{display:flex!important;flex-wrap:wrap;justify-content:center;gap:10px!important}
+  .brand-left,.brand-center,.brand-right{display:flex;align-items:center;justify-content:center}
+  .brand-name{white-space:normal!important;text-align:center}
+  .logistica-logo-img{width:125px!important;height:40px!important}
+  .brand-separator,.brand-separator-logistica{height:32px!important}
+}
 </style>
 <style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:0;width:90px;height:90px;max-width:100%;border-radius:0;background:transparent!important;overflow:hidden;display:flex;align-items:center;justify-content:center}.login-brand img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;background:transparent}.login-box h2{color:#303030!important}</style></head>
 <body class="locked">
@@ -393,7 +428,11 @@ input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(21
 
 <!-- CABECALHO -->
 <div class="header">
-    <div class="brand-wrap"><img class="brand-logo-img" src="logo_claro.png" alt="Claro"><span class="brand-separator" aria-hidden="true"></span><span class="brand-name">Central de Inteligência Operacional</span><span class="brand-separator brand-separator-logistica" aria-hidden="true"></span><img class="logistica-logo-img" src="logo_logistica.png" alt="Logística"></div>
+    <div class="brand-wrap">
+      <div class="brand-left"><img class="brand-logo-img" src="logo_claro.png" alt="Claro"><span class="brand-separator" aria-hidden="true"></span></div>
+      <div class="brand-center"><span class="brand-name">Central de Inteligência Operacional</span></div>
+      <div class="brand-right"><span class="brand-separator brand-separator-logistica" aria-hidden="true"></span><img class="logistica-logo-img" src="logo_logistica.png" alt="Logística"></div>
+    </div>
     <nav class="area-tabs" aria-label="Áreas da logística">
       <button type="button" class="area-tab active" data-area="armazenagem" aria-selected="true">Armazenagem</button>
       <button type="button" class="area-tab" data-area="triagem" aria-selected="false">Triagem</button>
