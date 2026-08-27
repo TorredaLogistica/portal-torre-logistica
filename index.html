@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Torre Logística Claro</title>
+<title>Claro | Central de Inteligência Operacional</title>
 <style>
 :root {
     --azul-claro: #1f355c;
@@ -242,14 +242,26 @@ body.locked {
 .cadastro-alerta-seguranca .alerta-titulo{display:inline-flex;align-items:center;gap:5px;color:#c70000;font-weight:800}
 .cadastro-alerta-seguranca .alerta-icone{font-size:15px;line-height:1}
 
+
+/* Identidade visual Claro */
+:root{--claro-red:#da291c;--claro-red-dark:#b51f25;--claro-orange:#f47b45;--claro-bg:#eef0f3;--claro-text:#242424;--claro-line:#dedede;--azul:#303030;--azul-claro:#303030;--vermelho:#da291c;--vermelho-claro:#da291c;--fundo:#eef0f3;--card-bg:#fff;--texto:#242424}
+html,body{background:var(--claro-bg)!important;color:var(--claro-text)}
+header,.header{position:relative;min-height:86px!important;padding:10px 26px!important;background:linear-gradient(180deg,#b51f25 0%,#cf2b25 46%,#f47b45 100%)!important;color:#fff!important;display:flex;align-items:center;box-shadow:0 4px 14px rgba(103,0,0,.20);z-index:5}
+.brand-wrap{display:flex;align-items:center;gap:20px;min-width:0}.brand-logo-img{display:block;width:170px;height:auto;object-fit:contain}.brand-separator{width:1px;height:42px;background:rgba(255,255,255,.62)}.brand-name{color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:23px;font-weight:700;letter-spacing:-.5px;line-height:1.16}
+.container,main{position:relative;isolation:isolate}.container:before{content:"";position:fixed;inset:86px 0 0;z-index:-1;background:url('logo_claro.png') center 62%/520px auto no-repeat;opacity:.055;pointer-events:none;filter:grayscale(1)}
+.card,.box{background:rgba(255,255,255,.96)!important;border:1px solid rgba(220,220,220,.85)!important}.card{border-radius:16px!important}.card:hover{box-shadow:0 12px 28px rgba(0,0,0,.14)!important}.icon{background:linear-gradient(145deg,#ed3025,#c51f25)!important;box-shadow:0 6px 14px rgba(218,41,28,.22)}
+button,.principal{background:var(--claro-red)!important;color:#fff!important}button:not(:disabled):hover,.principal:not(:disabled):hover{background:var(--claro-red-dark)!important}.sec,.secundario{background:#fff!important;color:#333!important;border:1px solid #c9c9c9!important}.verde{background:#087a4b!important}
+input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(218,41,28,.13)!important}h1,h2{color:#303030!important}
+@media(max-width:650px){header,.header{min-height:76px!important;padding:9px 15px!important}.brand-logo-img{width:120px}.brand-wrap{gap:12px}.brand-separator{height:34px}.brand-name{font-size:15px}.container:before{inset:76px 0 0;background-size:300px auto}.user-area{gap:7px!important;font-size:12px!important}}
+
 </style>
-</head>
+<style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:8px 18px;width:max-content;max-width:100%;border-radius:12px;background:linear-gradient(180deg,#b51f25,#f47b45)}.login-brand img{display:block;width:170px;max-width:100%;height:auto}.login-box h2{color:#303030!important}</style></head>
 <body class="locked">
 
 <!-- CAMADA DE SEGURANCA -->
 <div id="loginOverlay" aria-hidden="false">
-  <div class="login-box">
-    <h2>Acesso Restrito</h2>
+  <div class="login-box"><div class="login-brand"><img src="logo_claro.png" alt="Claro"></div>
+    <h2>Acesso à Central</h2>
     <p>Informe seus dados exatamente como foram cadastrados.</p>
     <input type="text" id="nome" placeholder="Digite seu usuário" autocomplete="name" maxlength="120">
     <div class="login-gap"></div>
@@ -276,7 +288,7 @@ body.locked {
 
 <!-- CABECALHO -->
 <div class="header">
-    <h1>Claro | Torre - Central de Controle</h1>
+    <div class="brand-wrap"><img class="brand-logo-img" src="logo_claro.png" alt="Claro"><span class="brand-separator" aria-hidden="true"></span><span class="brand-name">Central de Inteligência Operacional</span></div>
     <div id="userArea" class="user-area"><span>Usuário: <span id="nomeUsuario" class="user-name"></span></span><button type="button" class="logout-btn" onclick="sairPortal()">Sair</button></div>
 </div>
 
@@ -431,7 +443,7 @@ async function abrirCanalVermelho(event){
     alert('O navegador bloqueou a nova aba. Permita pop-ups para a Torre de Controle e tente novamente.');
     return;
   }
-  novaAba.document.write('<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><title>Preparando indicador</title></head><body style="font-family:Arial;text-align:center;padding:60px"><h2>Preparando o Indicador de Canal Vermelho...</h2><p>Aguarde alguns segundos.</p></body></html>');
+  novaAba.document.write('<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><title>Preparando indicador</title><style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:8px 18px;width:max-content;max-width:100%;border-radius:12px;background:linear-gradient(180deg,#b51f25,#f47b45)}.login-brand img{display:block;width:170px;max-width:100%;height:auto}.login-box h2{color:#303030!important}</style></head><body style="font-family:Arial;text-align:center;padding:60px"><h2>Preparando o Indicador de Canal Vermelho...</h2><p>Aguarde alguns segundos.</p></body></html>');
   try{
     const ts=Math.floor(Date.now()/1000).toString();
     const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
