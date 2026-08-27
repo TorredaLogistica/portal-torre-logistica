@@ -352,6 +352,13 @@ input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(21
   .logistica-word:before{margin-right:10px;font-size:27px}
   .area-tabs{width:100%;justify-content:center;overflow-x:auto}
 }
+
+/* Logo Logistica com transparencia real e separadores iguais */
+.logistica-word{display:none!important}
+.brand-separator-logistica{width:1px!important;height:44px!important;background:rgba(255,255,255,.62)!important;flex:0 0 1px}
+.logistica-logo-img{display:block;width:165px;height:58px;object-fit:contain;object-position:center;background:transparent;flex:0 0 auto}
+@media(max-width:1000px){.logistica-logo-img{width:142px;height:50px}.brand-separator-logistica{height:40px!important}}
+@media(max-width:650px){.logistica-logo-img{width:110px;height:40px}.brand-separator-logistica{height:32px!important}}
 </style>
 <style>#loginOverlay{background:linear-gradient(180deg,rgba(181,31,37,.97),rgba(244,123,69,.94))!important}.login-box{border-radius:16px!important;border-top:5px solid var(--claro-red)!important}.login-brand{margin:0 auto 22px;padding:0;width:90px;height:90px;max-width:100%;border-radius:0;background:transparent!important;overflow:hidden;display:flex;align-items:center;justify-content:center}.login-brand img{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;background:transparent}.login-box h2{color:#303030!important}</style></head>
 <body class="locked">
@@ -386,7 +393,7 @@ input:focus{border-color:var(--claro-red)!important;box-shadow:0 0 0 3px rgba(21
 
 <!-- CABECALHO -->
 <div class="header">
-    <div class="brand-wrap"><img class="brand-logo-img" src="logo_claro.png" alt="Claro"><span class="brand-separator" aria-hidden="true"></span><span class="brand-name">Central de Inteligência Operacional</span><span class="logistica-word" aria-label="Logística">Logística</span></div>
+    <div class="brand-wrap"><img class="brand-logo-img" src="logo_claro.png" alt="Claro"><span class="brand-separator" aria-hidden="true"></span><span class="brand-name">Central de Inteligência Operacional</span><span class="brand-separator brand-separator-logistica" aria-hidden="true"></span><img class="logistica-logo-img" src="logo_logistica.png" alt="Logística"></div>
     <nav class="area-tabs" aria-label="Áreas da logística">
       <button type="button" class="area-tab active" data-area="armazenagem" aria-selected="true">Armazenagem</button>
       <button type="button" class="area-tab" data-area="triagem" aria-selected="false">Triagem</button>
